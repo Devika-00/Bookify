@@ -1,0 +1,62 @@
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12 border rounded " >
+            <h1 class="text-center">Edit Order</h1>
+
+            <!-- Edit Order Form -->
+            <form >
+                <div class="form-group ">
+                    <label for="referenceNo">Reference No</label>
+                    <input type="text" class="form-control" id="referenceNo" placeholder="Enter reference no" required>
+                </div>
+                <div class="form-group">
+                    <label for="paymentMethod">Payment Method</label>
+                    <select class="form-control" id="paymentMethod" required>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <!-- Add more payment methods as needed -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="shippingCost">Shipping Cost</label>
+                    <input type="text" class="form-control" id="shippingCost" placeholder="Enter shipping cost" required>
+                </div>
+                <div class="form-group">
+                    <label for="deliveryDate">Delivery Date</label>
+                    <input type="date" class="form-control" id="deliveryDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerName">Customer Name</label>
+                    <input type="text" class="form-control" id="customerName" placeholder="Enter customer name" required>
+                </div>
+                <div class="form-group">
+                    <label for="totalAmount">Total Amount</label>
+                    <input type="text" class="form-control" id="totalAmount" placeholder="Enter total amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="mobile">Mobile</label>
+                    <input type="tel" class="form-control" id="mobile" placeholder="Enter mobile number" required>
+                </div>
+                <div class="form-group">
+                    <label for="shippingAddress">Shipping Address</label>
+                    <textarea class="form-control" id="shippingAddress" rows="4" placeholder="Enter shipping address" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select class="form-control" id="status" required>
+                        <option value="Pending">Pending</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="items">Items</label>
+                    <textarea class="form-control" id="items" rows="4" placeholder="Enter items details" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Order</button>
+            </form>
+        </div>
+    </div>
+</div>

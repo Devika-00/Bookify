@@ -1,0 +1,52 @@
+<div class="container mt-5 ">
+    <h2>Profile</h2>
+    <div class="col-md-4 ">
+            <!-- User Profile Picture -->
+            <img src="images/src" alt="User's Profile Picture" class="img-fluid w-50" >
+            <input type="file" id="profilePicture" class="form-control mt-3" style="display: none;">
+            <div><button class="btn btn-primary btn-block btn-sm w-50" id="changePicture">Change Profile Picture</button></div>
+        </div>
+    <form>
+        <div class="mb-3 mt-2" >
+            <label for="firstName" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" value="John" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" value="Doe" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="dob" class="form-label">Date of Birth</label>
+            <input type="date" class="form-control" id="dob" name="dob" value="1990-01-01" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" name="address" value="123 Main St" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="state" class="form-label">State</label>
+            <input type="text" class="form-control" id="state" name="state" value="California" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" name="city" value="Los Angeles" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="locality" class="form-label">Locality</label>
+            <input type="text" class="form-control" id="locality" name="locality" value="Downtown" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="pincode" class="form-label">Pincode</label>
+            <input type="text" class="form-control" id="pincode" name="pincode" value="90001" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="mobile" class="form-label">Mobile Number</label>
+            <input type="text" class="form-control" id="mobile" name="mobile" value="+1234567890" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="john@example.com" readonly>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2 ">Save</button>
+    </form>
+</div>
