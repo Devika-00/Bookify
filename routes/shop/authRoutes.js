@@ -19,7 +19,10 @@ router.get("/register",ensureLoggedOut({ redirectTo: "/" }), authController.regi
 router.get("/forgot-password",ensureLoggedOut({ redirectTo: "/" }), authController.forgotPasswordpage);
 router.get("/forgot-password-success",ensureLoggedOut({ redirectTo: "/" }), authController.forgotPasswordSuccesspage);
 router.get("/logout", ensureLoggedIn({redirectTo:"/auth/login"}), authController.logoutUser);
+// router.get("/send-otp", authController.sendOtppage);
+router.get("/verify-otp", authController.verifyOtppage);
 
+router.post("/verify-otp", authController.verifyOtp);
 router.post("/login",passport.authenticate("local", { successRedirect: "/", failureRedirect: "/auth/login", failureFlash: true }));
 
 router.post("/register",

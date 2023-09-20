@@ -8,6 +8,8 @@ const connectFlash = require("connect-flash");
 const passport = require("passport");
 const connectMongo = require("connect-mongo");
 const { default: mongoose } = require("mongoose");
+const { ensureAdmin } = require("./middlewares/authMiddleware");
+
 
 const {ensureLoggedIn, ensureLoggedOut } = require("connect-ensure-login");
 
@@ -66,14 +68,14 @@ const couponRoute = require("./routes/admin/couponRoutes");
 const adminAuthRoute = require("./routes/admin/authRoute");
 const orderRoute = require("./routes/admin/ordersRoute");
 
-app.use("/admin/products", productRoute);
-app.use("/admin/category",categoryRoute);
-app.use("/admin/banner",bannerRoute);
-app.use("/admin/customer",customerRoute);
-app.use("/admin/coupon",couponRoute);
+app.use("/admin/products", ensureAdmin, productRoute);
+app.use("/admin/category",ensureAdmin,categoryRoute);
+app.use("/admin/banner",ensureAdmin,bannerRoute);
+app.use("/admin/customer",ensureAdmin,customerRoute);
+app.use("/admin/coupon",ensureAdmin,couponRoute);
 app.use("/admin/auth",adminAuthRoute);
-app.use("/admin/order",orderRoute);
-app.use("/admin", adminRoute);
+app.use("/admin/order",ensureAdmin,orderRoute);
+app.use("/admin",ensureAdmin, adminRoute);
 
 //user routes
 
