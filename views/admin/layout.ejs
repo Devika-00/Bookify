@@ -21,8 +21,9 @@
         >
 
     <% if (title === "Login" || title === "Register") { %>
-        <%- body %>
+        <%- body %> 
     <% } else { %>
+      <%- include('./partials/sidebar.ejs') %>
       <div class="body-wrapper">
         <%- include('./partials/header.ejs') %>
         <div class="container-fluid"><%- body %></div>

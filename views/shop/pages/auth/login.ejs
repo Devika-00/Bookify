@@ -3,12 +3,13 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 col-12 col-lg-6 col-xl-6 ms-auto me-auto">
+                <%- include('../../partials/flash-message.ejs') %>
                 <div class="login">
                     <div class="login-form-container">
                         <div class="login-form">
-                            <form action="#" method="post">
-                                <input type="text" name="user-name" placeholder="Username">
-                                <input type="password" name="user-password" placeholder="Password">
+                            <form action="/auth/login" method="post">
+                                <input type="user-mail" name="email" placeholder="email">
+                                <input type="password" name="password" placeholder="Password">
                                 <div class="button-box">
                                     <div class="login-toggle-btn">
                                         <input type="checkbox">
