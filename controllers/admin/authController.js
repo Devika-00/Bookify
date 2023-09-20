@@ -6,19 +6,26 @@ const asyncHandler = require("express-async-handler");
  */
 exports.loginpage = asyncHandler(async (req, res) => {
     try {
-        res.render("admin/pages/auth/login", { title: "Login" });
+        const messages = req.flash();
+        res.render("admin/pages/auth/login", { title: "Login", messages });
     } catch (error) {
         throw new Error(error);
     }
 });
 
 /**
- * Register Page Route
+ * Logout Admin
  * Method GET
  */
-exports.registerpage = asyncHandler(async (req, res) => {
+exports.logoutAdmin = asyncHandler(async (req, res, next) => {
     try {
-        res.render("admin/pages/auth/register", { title: "Register" });
+        req.logout((err) => {
+            if (err) {
+                return next(err);
+            }
+            req.flash("success", "Logged Out!");
+            res.redirect("/admin/auth/login");
+        });
     } catch (error) {
         throw new Error(error);
     }
