@@ -1,10 +1,13 @@
 const asyncHandler = require("express-async-handler");
+const Category = require("../../models/categoryModel")
+
 /**shop psge
  * GET Method
  */
 exports.shoppage = asyncHandler(async(req,res)=>{
     try {
-        res.render("shop/pages/products/shop",{title:"Shop Page",page:"shop"});
+        const category = await Category.find();
+        res.render("shop/pages/products/shop",{title:"Shop Page",page:"shop", category});
     } catch (error) {
        throw new Error(error); 
     }
@@ -16,7 +19,7 @@ exports.shoppage = asyncHandler(async(req,res)=>{
  */
 exports.singleProductpage = asyncHandler(async (req, res) => {
    try {
-    res.render("shop/pages/products/product")
+    res.render("shop/pages/products/product", {title: "Product", page: "Product "})
    } catch (error) {
     throw new Error(error)
    }
