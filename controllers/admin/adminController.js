@@ -5,15 +5,18 @@ const asyncHandler = require("express-async-handler");
  * Method GET
  */
 exports.homepage = asyncHandler(async (req, res) => {
+    const admin = req.user
     try {
-        /**
-         * TODO: check the token and redirect to admin page or login page according to token
-         */
-        res.redirect("/admin/dashboard");
+        if (admin) {
+            res.redirect("/admin/dashboard");
+        } else {
+            res.redirect("/admin/auth/login");
+        }
     } catch (error) {
         throw new Error(error);
     }
 });
+
 
 /**
  * Dashborad Page Route

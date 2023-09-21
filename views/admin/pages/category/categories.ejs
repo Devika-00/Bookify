@@ -1,43 +1,66 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h2 class="h2">Category Management</h2>
-      </div>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h2 class="h2">Category Management</h2>
+  </div>
+  <%- include('../../partials/flash-message.ejs') %>  
 
-      <!-- Category List -->
-      <div class="card">
-        <div class="card-header">
-          Category List
-        </div>
-        <div class="card-body">
-          <!-- Display categories in a table -->
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Category Name</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Category 1</td>
-                <td>
-                  <button class="btn btn-sm btn-primary">Edit</button>
-                  <button class="btn btn-sm btn-danger">Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Category 2</td>
-                <td>
-                  <button class="btn btn-sm btn-primary">Edit</button>
-                  <button class="btn btn-sm btn-danger">Delete</button>
-                </td>
-              </tr>
-              <!-- Add more rows as needed -->
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <!-- Category List -->
+  <div class="card">
+    <div class="card-header">Category List</div>
+    <div class="card-body">
+      <!-- Display categories in a table -->
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Category Name</th>
+            <th>List / Unlist</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% categories.forEach((category, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= category.title %></td>
+            <td class="d-flex justify-content-between">
+              <% if(category.isListed) { %>
+                List
+              <% } else { %>
+                Not Listed
+              <% } %>
+              <% if (category.isListed) { %>
+              <form method="post" action="/admin/category/unlist/<%= category._id %>?_method=PUT">
+                <button type="submit" class="btn btn-sm btn-success">
+                  <i class='bx bxs-message-square-check' ></i>
+                </button>
+              </form>
+              <% } else { %>
+              <form method="post" action="/admin/category/list/<%= category._id %>?_method=PUT">
+                <button type="submit" class="btn btn-sm btn-danger">
+                  <i class='bx bxs-message-square-x'></i>
+                </button>
+              </form>
+              <% } %>
+            </td>
+            <td class="text-center">
+              <div class="d-flex justify-content-center align-items-center">
+                <a href="/admin/category/edit/<%= category._id %>" class="btn btn-sm btn-primary ml-2 mr-1">
+                  <i class='bx bxs-edit'></i>
+                </a>
+                <form action="/admin/category/delete/<%= category._id %>?_method=DELETE" method="post">
+                  <button type="submit" class="btn btn-sm btn-danger ml-1">
+                    <i class='bx bxs-trash' ></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+            
+            
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </main>

@@ -1,13 +1,41 @@
+<%- include('../../partials/flash-message.ejs') %> 
 <div class="card mt-4">
     <div class="card-header">
-      Add New Category
+      <h2>Add New Category</h2>
     </div>
     <div class="card-body">
-      <form>
+      <form action="/admin/category/add-category" method="post" >
         <div class="form-group">
-          <label for="categoryName">Category Name</label>
-          <input type="text" class="form-control" id="categoryName" placeholder="Enter category name">
+          <label for="categoryName" class="form-label">Category Name</label>
+          <input type="text" class="form-control" id="categoryName" name="title" required placeholder="Enter category name">
         </div>
+        <div class="mb-3">
+          <label for="categoryStatus" class="form-label">Status</label>
+          <div class="form-check">
+              <div class="form-check">
+                  <input
+                      class="form-check-input"
+                      type="radio"
+                      value="true"
+                      name="isListed"
+                      checked
+                      id="list"
+                  />
+                  <label class="form-check-label" for="list">List</label>
+              </div>
+              <div class="form-check">
+                  <input
+                      class="form-check-input"
+                      type="radio"
+                      value="false"
+                      name="isListed"
+                      id="unlist"
+                  />
+                  <label class="form-check-label" for="unlist">Unlist</label>
+              </div>
+          </div>
+      </div>
+
         <button type="submit" class="btn btn-primary">Add Category</button>
       </form>
     </div>

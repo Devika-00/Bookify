@@ -9,6 +9,7 @@ const passport = require("passport");
 const connectMongo = require("connect-mongo");
 const { default: mongoose } = require("mongoose");
 const { ensureAdmin } = require("./middlewares/authMiddleware");
+const methodOverride = require("method-override")
 
 
 const {ensureLoggedIn, ensureLoggedOut } = require("connect-ensure-login");
@@ -26,6 +27,7 @@ app.use("/shop",express.static(__dirname+"public/shop"));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
+app.use(methodOverride("_method"))
 
 const MongoStore = connectMongo(session);
 
