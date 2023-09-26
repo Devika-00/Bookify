@@ -21,6 +21,7 @@ router.get("/forgot-password-success",ensureLoggedOut({ redirectTo: "/" }), auth
 router.get("/logout", ensureLoggedIn({redirectTo:"/auth/login"}), authController.logoutUser);
 // router.get("/send-otp", authController.sendOtppage);
 router.get("/verify-otp", authController.verifyOtppage);
+router.get("/blocked/:id", authController.blockedUserpage);
 
 router.post("/verify-otp", authController.verifyOtp);
 router.post("/login",passport.authenticate("local", { successRedirect: "/", failureRedirect: "/auth/login", failureFlash: true }));

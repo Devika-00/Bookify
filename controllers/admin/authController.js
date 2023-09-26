@@ -1,4 +1,6 @@
 const asyncHandler = require("express-async-handler");
+const User = require("../../models/usermodel");
+const validateMongoDbId = require("../../utils/validateMongoDbId");
 
 /**
  * Login Page Route
@@ -8,6 +10,21 @@ exports.loginpage = asyncHandler(async (req, res) => {
     try {
         const messages = req.flash();
         res.render("admin/pages/auth/login", { title: "Login", messages });
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+/**
+ * Blcoked Admin page
+ * Method GET
+ */
+exports.blockedAdminpage = asyncHandler(async (req, res) => {
+    try {
+        const id = req.params.id;
+        validateMongoDbId(id);
+        const user = await User.findById(id);
+        res.render("admin/pages/auth/blocked", { title: "Blocked", page: "blocked", user });
     } catch (error) {
         throw new Error(error);
     }

@@ -1,61 +1,79 @@
 <!-- Page Content -->
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Products</h1>
+<div class="container mt-4 border border-dark-light pt-4">
+  <div class="row">
+    <%- include('../../partials/flash-message.ejs') %>
+    <div class="col-md-12">
+      <h1>Products</h1>
 
-            <!-- Product List -->
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>ID</th>
-                        <th>Product Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Display product list here -->
-                    <tr>
-                        <td>1</td>
-                        <td>12345</td>
-                        <td>Product 1</td>
-                        <td>Category A</td>
-                        <td>$19.99</td>
-                        <td>
-                            <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>12345</td>
-                        <td>Product 1</td>
-                        <td>Category A</td>
-                        <td>$19.99</td>
-                        <td>
-                            <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>12345</td>
-                        <td>Product 1</td>
-                        <td>Category A</td>
-                        <td>$19.99</td>
-                        <td>
-                            <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-                    <!-- Add more product rows as needed -->
-                </tbody>
-            </table>
-        </div>
+      <!-- Product List -->
+      <table class="table table-striped">
+        <thead>
+          <tr class="text-dark">
+            <th>S.No</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Sales Price</th>
+            <th>Product Price</th>
+            <th>Quantity</th>
+            <th>Images</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach((product, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td>
+              <% if (product.title.length > 10) { %> <%=
+              product.title.substring(0, 10) + "..." %> <% } else { %> <%=
+              product.title %> <% } %>
+            </td>
+            <td><%= product.category.title %></td>
+            <td><% if (product.description.length > 10) { %> <%=
+              product.description.substring(0, 10) + '...' %> <% } else { %> <%=
+              product.description %> <% } %>
+            </td>
+            <td>$<%= product.salePrice %></td>
+            <td>$<%= product.productPrice %></td>
+            <td><%= product.quantity %></td>
+            <td class="align-middle">
+              <img class="img-fluid img-thumbnail" src="<%= product.image %>" alt="" style="width: 100px; height: 100px;">
+            </td>                      
+            <td>
+              <div class="btn-group" role="group" aria-label="Product Actions">
+                <a
+                  href="/admin/product/edit-product/<%= product._id %>"
+                  class="btn btn-primary btn-sm"
+                  style="margin-right: 10px"
+                >
+                  <i class="ti ti-pencil"></i>
+                </a>
+                <% if (product.isListed) { %>
+                <form
+                  method="post"
+                  action="/admin/product/unlist/<%= product._id %>?_method=PUT"
+                >
+                  <button type="submit" class="btn btn-sm btn-success">
+                    <i class='bx bxs-message-square-check' ></i>
+                  </button>
+                </form>
+                <% } else { %>
+                <form
+                  method="post"
+                  action="/admin/product/list/<%= product._id %>?_method=PUT"
+                >
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    <i class='bx bxs-message-square-x'></i>
+                  </button>
+                </form>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
     </div>
+  </div>
 </div>

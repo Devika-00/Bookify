@@ -13,6 +13,7 @@ router.use((req, res, next) => {
 // Auth Rotues
 router.get("/login", ensureLoggedOut({redirectTo:"/admin/dashboard"}), authController.loginpage);
 router.get("/logout", ensureLoggedIn({redirectTo:"/admin/auth/login"}), authController.logoutAdmin);
+router.get("/blocked/:id", authController.blockedAdminpage)
 router.post("/login",passport.authenticate("local", { successReturnToOrRedirect: "/admin/dashboard",failureRedirect: "/admin/auth/login",failureFlash: true,}));
 
 

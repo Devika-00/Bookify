@@ -6,6 +6,7 @@ const emailSender = require("../../utils/emailSender");
 const Otp = require("../../models/otpModel");
 const generateOTP = require("../../utils/otpGenerator");
 const sendEmail = require("../../utils/emailSender");
+const validateMongoDbId = require("../../utils/validateMongoDbId");
 
 /**Login route
  * GET Method
@@ -212,6 +213,21 @@ exports.verifyOtppage = asyncHandler(async (req, res) => {
     try {
         const messages = req.flash();
         res.render("shop/pages/auth/verify-otp", { title: "Send Otp", page: "Send Otp", messages });
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+/**
+ * Blcoked User page
+ * Method GET
+ */
+exports.blockedUserpage = asyncHandler(async (req, res) => {
+    try {
+        const id = req.params.id;
+        validateMongoDbId(id);
+        const user = await User.findById(id);
+        res.render("shop/pages/auth/blocked", { title: "Blocked", page: "blocked", user });
     } catch (error) {
         throw new Error(error);
     }

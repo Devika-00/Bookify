@@ -8,8 +8,11 @@ router.use((req, res, next) => {
     next();
 });
 
-// Customer Routes
 router.get("/customers", customerController.customerpage);
+router.get("/view/:id", customerController.viewCustomer);
+router.put("/block/:id", customerController.blockCustomer);
+router.put("/unblock/:id", customerController.unblockCustomer);
+router.put("/update-role/:id", customerController.updateRole);
 
 
 module.exports=router;

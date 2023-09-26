@@ -1,4 +1,6 @@
 const asyncHandler = require("express-async-handler");
+const validateMongoDbId = require("../../utils/validateMongoDbId");
+const User = require("../../models/usermodel");
 
 /**
  * Wishlist Page Route
@@ -17,7 +19,9 @@ exports.wishlistpage = asyncHandler(async (req, res) => {
  */
 exports.profilepage = asyncHandler(async (req, res) => {
     try {
-        res.render("shop/pages/user/profile", { title: "Profile", page: "profile" });
+        const messages = req.flash();
+        const user = await User.findById(req.user._id) 
+        res.render("shop/pages/user/profile", { title: "Profile", page: "profile" ,user,messages});
     } catch (error) {
         throw new Error(error);
     }

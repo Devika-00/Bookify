@@ -11,7 +11,10 @@ const { default: mongoose } = require("mongoose");
 const { ensureAdmin } = require("./middlewares/authMiddleware");
 const methodOverride = require("method-override")
 
-
+const {
+    isBlockedAdmin,
+    isBlockedUser,
+} = require("./middlewares/authMiddleware");
 const {ensureLoggedIn, ensureLoggedOut } = require("connect-ensure-login");
 
 
@@ -70,14 +73,14 @@ const couponRoute = require("./routes/admin/couponRoutes");
 const adminAuthRoute = require("./routes/admin/authRoute");
 const orderRoute = require("./routes/admin/ordersRoute");
 
-app.use("/admin/products", ensureAdmin, productRoute);
-app.use("/admin/category",ensureAdmin,categoryRoute);
-app.use("/admin/banner",ensureAdmin,bannerRoute);
-app.use("/admin/customer",ensureAdmin,customerRoute);
-app.use("/admin/coupon",ensureAdmin,couponRoute);
+app.use("/admin/product",ensureLoggedIn({ redirectTo: "/admin/auth/login" }),  ensureAdmin, isBlockedAdmin , productRoute);
+app.use("/admin/category",ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin,isBlockedAdmin,categoryRoute);
+app.use("/admin/banner",ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin,isBlockedAdmin,bannerRoute);
+app.use("/admin/customer",ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin, isBlockedAdmin,customerRoute);
+app.use("/admin/coupon", ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin,isBlockedAdmin,couponRoute);
 app.use("/admin/auth",adminAuthRoute);
-app.use("/admin/order",ensureAdmin,orderRoute);
-app.use("/admin",ensureAdmin, adminRoute);
+app.use("/admin/order", ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin,isBlockedAdmin,orderRoute);
+app.use("/admin", ensureLoggedIn({ redirectTo: "/admin/auth/login" }), ensureAdmin, isBlockedAdmin, adminRoute);
 
 //user routes
 
@@ -88,10 +91,10 @@ const orderRoutes = require("./routes/shop/orderRoutes");
 
 
 
-app.use("/", shopRoute);
+app.use("/",  shopRoute);
 app.use("/auth", authRoutes);
-app.use("/user",ensureLoggedIn({ redirectTo: "/auth/login" }),   userRoutes);
-app.use("/order",ensureLoggedIn({ redirectTo: "/auth/login" }),  orderRoutes);
+app.use("/user",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser,  userRoutes);
+app.use("/order",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser, orderRoutes);
 
 app.use((req,res)=>{
     res.render("404",{title:"404", page:"404"});

@@ -5,6 +5,7 @@ const router = express.Router();
 const shopController =require("../../controllers/shop/shopController");
 const productController=require("../../controllers/shop/productController");
 const cartController=require("../../controllers/shop/cartController");
+const { isBlockedUser } = require('../../middlewares/authMiddleware');
 
 
 router.use((req, res, next) => {
@@ -12,7 +13,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get("/",shopController.homepage);
+router.get("/", isBlockedUser, shopController.homepage);
 router.get("/contact",shopController.contactpage);
 router.get("/about",shopController.aboutpage);
 
