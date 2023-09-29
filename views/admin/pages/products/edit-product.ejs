@@ -1,10 +1,13 @@
 <div class="row justify-content-center">
-  <div class="col-lg-8 ">
+  <div class="col-lg-8">
     <div class="card border border-dark-light">
       <div class="card-body p-4">
-        <h5 class="card-title fw-semibold mb-4">Edit Product</h5>
+        <div class="d-flex justify-content-between">
+          <h5 class="card-title fw-semibold mb-4">Edit Product</h5>
+          <a class="btn btn-primary" href="/admin/product/edit/image/<%= product._id %>">Change Images</a>
+        </div>
         <form
-          action="/admin/product/edit/<%= product._id%>/?_method=PUT"
+          action="/admin/product/edit/<%= product._id %>?_method=PUT"
           method="post"
         >
           <div class="form-group mt-2">
@@ -22,10 +25,13 @@
           <div class="form-group mt-2">
             <label for="category">Category:</label>
             <select class="form-select" name="category" id="category" required>
-                <option selected value="<%= product.category._id %>"><%= product.category.title %></option>
-                <% categories.forEach(category=> { %> <% if (category.title !== product.category.title) { %>
-                <option value="<%= category._id %>"><%= category.title %></option>
-                <% } %> <% }) %>
+              <option selected value="<%= product.category._id %>">
+                <%= product.category.title %>
+              </option>
+              <% categories.forEach(category => { %> <% if (category.title !==
+              product.category.title) { %>
+              <option value="<%= category._id %>"><%= category.title %></option>
+              <% } %> <% }) %>
             </select>
           </div>
           <div class="form-group mt-2">
@@ -37,8 +43,8 @@
               name="description"
               placeholder="Enter product description"
               required
-              >
-            <%- product.description %></textarea>
+            ><%= product.description %></textarea
+            >
           </div>
           <div class="form-group mt-2">
             <label for="productPrice">Product Price:</label>
@@ -76,14 +82,48 @@
               required
             />
           </div>
-          <div class="form-group">
-            <label for="salePrice">Image Url</label>
-            <input type="text" class="form-control" name="image" id="image" placeholder="Enter image url" value="<%= product.image %>" required>
-        </div>
-        <button type="submit" class="btn btn-primary mt-2">Save Changes</button>
-        </div>
+          <button type="submit" class="btn btn-primary mt-2">
+            Save Changes
+          </button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+
+<script>
+  // Function to handle file input change and update preview
+  const updateImageButtons = document.querySelectorAll(".update-image-button");
+
+  function handleFileInputChange(index) {
+      const fileInput = document.getElementById("image" + index);
+      const previewImage = document.getElementById("previewImage" + index);
+      const submitButton = document.getElementById("submitImage" + index);
+
+      fileInput.addEventListener("change", (event) => {
+          if (fileInput.files && fileInput.files[0]) {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                  previewImage.src = e.target.result;
+              };
+              reader.readAsDataURL(fileInput.files[0]);
+              // Enable the "Update Image" button when a file is selected
+              submitButton.removeAttribute("disabled");
+          } else {
+              // Disable the "Update Image" button if no file is selected
+              submitButton.setAttribute("disabled", "disabled");
+          }
+      });
+
+      // Trigger the hidden file input
+      fileInput.click();
+  }
+
+  // Add event listeners to all update image buttons
+  updateImageButtons.forEach((button, index) => {
+      button.addEventListener("click", (event) => {
+          handleFileInputChange(index);
+      });
+  });
+</script>

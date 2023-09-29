@@ -9,7 +9,12 @@ const passport = require("passport");
 const connectMongo = require("connect-mongo");
 const { default: mongoose } = require("mongoose");
 const { ensureAdmin } = require("./middlewares/authMiddleware");
-const methodOverride = require("method-override")
+const methodOverride = require("method-override");
+const nocache = require("nocache");
+
+
+
+
 
 const {
     isBlockedAdmin,
@@ -31,6 +36,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(methodOverride("_method"))
+app.use(nocache());
 
 const MongoStore = connectMongo(session);
 
