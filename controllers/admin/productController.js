@@ -2,20 +2,28 @@ const asyncHandler = require("express-async-handler");
 const Product = require("../../models/productModel");
 const Category = require("../../models/categoryModel");
 const validateMongoDbId = require("../../utils/validateMongoDbId");
+const path = require("path");
+const sharp = require("sharp");
+const Image = require("../../models/imageModal");
 
 /**
  * Manage Product Page Route
  * Method GET
  */
 exports.productspage = asyncHandler(async (req, res) => {
-    try {
-        const messages = req.flash();
-        const products = await Product.find().populate("category")
-        // res.json(products)
-        res.render("admin/pages/products/product", { title: "Products" ,messages,products});
-    } catch (error) {
-        throw new Error(error);
-    }
+  try {
+    const messages = req.flash();
+    const products = await Product.find()
+      .populate("category")
+      .populate("images");
+    res.render("admin/pages/products/product", {
+      title: "Products",
+      messages,
+      products,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 /**
@@ -23,12 +31,15 @@ exports.productspage = asyncHandler(async (req, res) => {
  * Method GET
  */
 exports.addProductpage = asyncHandler(async (req, res) => {
-    try {
-        const categories = await Category.find({ isListed: true });
-        res.render("admin/pages/products/add-product", { title: "Add Products",categories });
-    } catch (error) {
-        throw new Error(error);
-    }
+  try {
+    const categories = await Category.find({ isListed: true });
+    res.render("admin/pages/products/add-product", {
+      title: "Add Products",
+      categories,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 /**
@@ -36,53 +47,89 @@ exports.addProductpage = asyncHandler(async (req, res) => {
  * Method GET
  */
 exports.editProductpage = asyncHandler(async (req, res) => {
-    try {
-        const id = req.params.id;
-        validateMongoDbId(id);
-        const categories = await Category.find({ isListed: true });
-        const product = await Product.findById(id).populate("category");
-        res.render("admin/pages/products/edit-product", { title: "Edit Products",categories,product });
-    } catch (error) {
-        throw new Error(error);
-    }
+  try {
+    const id = req.params.id;
+    validateMongoDbId(id);
+    const categories = await Category.find({ isListed: true });
+    const product = await Product.findById(id)
+      .populate("category")
+      .populate("images");
+    res.render("admin/pages/products/edit-product", {
+      title: "Edit Products",
+      categories,
+      product,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 /**
  * add product route
  * method post
  */
-exports.createProduct = asyncHandler(async(req,res) => {
-    try {
-        const newProduct = await Product.create({
-            title: req.body.title,
-            category: req.body.category,
-            description: req.body.description,
-            productPrice: req.body.productPrice,
-            salePrice: req.body.salePrice,
-            image: req.body.image,
-            quantity: req.body.quantity,
-        });
-        req.flash("success", `${newProduct.title} added`);
-        res.redirect("/admin/product");
-    } catch (error) {
-        throw new Error(error);
+
+exports.createProduct = async (req, res) => {
+  try {
+    const imageUrls = [];
+
+    // Check if req.files exists and has images
+    if (req.files && req.files.images.length > 0) {
+      const images = req.files.images;
+
+      for (const file of images) {
+        try {
+          const imageBuffer = await sharp(file.path)
+            .resize(600, 800)
+            .toBuffer();
+          const thumbnailBuffer = await sharp(file.path)
+            .resize(300, 300)
+            .toBuffer();
+          const imageUrl = path.join("/admin/uploads", file.filename);
+          const thumbnailUrl = path.join("/admin/uploads", file.filename);
+          imageUrls.push({ imageUrl, thumbnailUrl });
+        } catch (error) {
+          console.error("Error processing image:", error);
+        }
+      }
+
+      const image = await Image.create(imageUrls);
+      const ids = image.map((image) => image._id);
+
+      const newProduct = await Product.create({
+        title: req.body.title,
+        category: req.body.category,
+        description: req.body.description,
+        productPrice: req.body.productPrice,
+        salePrice: req.body.salePrice,
+        images: ids,
+        quantity: req.body.quantity,
+      });
+      req.flash("success", "Product Created");
+      res.redirect("/admin/product/products");
+    } else {
+      res.status(400).json({ error: "Invalid input: No images provided" });
     }
-});
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 /**
  * Edit Product Route
  * Method PUT
  */
 exports.updateProduct = asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    validateMongoDbId(id);
-    try {
-        const editedProduct = await Product.findByIdAndUpdate(id, req.body);
-        req.flash("success", `Product ${editedProduct.title} updated`);
-        res.redirect("/admin/product/products");
-    } catch (error) {
-        throw new Error(error);
-    }
+  const id = req.params.id;
+  validateMongoDbId(id);
+  try {
+    const editedProduct = await Product.findByIdAndUpdate(id, req.body);
+    req.flash("success", `Product ${editedProduct.title} updated`);
+    res.redirect("/admin/product/products");
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 /**
@@ -90,15 +137,17 @@ exports.updateProduct = asyncHandler(async (req, res) => {
  * Method PUT
  */
 exports.listProduct = asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    validateMongoDbId(id);
-    try {
-        const updatedProduct = await Product.findByIdAndUpdate(id, { isListed: true });
-        req.flash("success", `${updatedProduct.title} Listed`);
-        res.redirect("/admin/product/products");
-    } catch (error) {
-        throw new Error(error);
-    }
+  const id = req.params.id;
+  validateMongoDbId(id);
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(id, {
+      isListed: true,
+    });
+    req.flash("success", `${updatedProduct.title} Listed`);
+    res.redirect("/admin/product/products");
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 /**
@@ -106,13 +155,62 @@ exports.listProduct = asyncHandler(async (req, res) => {
  * Method PUT
  */
 exports.unlistProdcut = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  validateMongoDbId(id);
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(id, {
+      isListed: false,
+    });
+    req.flash("warning", `${updatedProduct.title} Unllisted`);
+    res.redirect("/admin/product/products");
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+/**
+ * edit-image
+ * get method
+ */
+exports.editImagepage = asyncHandler(async (req, res) => {
+  try {
     const id = req.params.id;
     validateMongoDbId(id);
-    try {
-        const updatedProduct = await Product.findByIdAndUpdate(id, { isListed: false });
-        req.flash("warning", `${updatedProduct.title} Unllisted`);
-        res.redirect("/admin/product/products");
-    } catch (error) {
-        throw new Error(error);
-    }
+    const messages = req.flash();
+    const product = await Product.findById(id).populate("images").exec();
+    res.render("admin/pages/products/update-image", {
+      title: "Edit Images",
+      product,
+      messages,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+/**
+ * 
+ * edit image 
+ * put method
+ */
+
+exports.editImage = asyncHandler(async (req, res) => {
+  try {
+    const imageId = req.params.id;
+    const file = req.file;
+    const imageBuffer = await sharp(file.path).resize(600, 800).toBuffer();
+    const thumbnailBuffer = await sharp(file.path).resize(300, 300).toBuffer();
+    const imageUrl = path.join("/admin/uploads", file.filename);
+    const thumbnailUrl = path.join("/admin/uploads", file.filename);
+
+    const images = await Image.findByIdAndUpdate(imageId, {
+      imageUrl: imageUrl,
+      thumbnailUrl: thumbnailUrl,
+    });
+
+    req.flash("success", "Image updated");
+    res.redirect("back");
+  } catch (error) {
+    throw new Error(error);
+  }
 });

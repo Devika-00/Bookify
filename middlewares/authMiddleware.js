@@ -5,7 +5,7 @@ const ensureAdmin = (req, res, next) => {
         next();
     } else {
         req.flash("warning", "You are not Authorized");
-        res.redirect("/admin/auth/login");
+        res.redirect("back");
     }
 };
 

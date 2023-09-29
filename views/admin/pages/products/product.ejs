@@ -1,5 +1,5 @@
 <!-- Page Content -->
-<div class="container mt-4 border border-dark-light pt-4">
+<div class="container mt-4  pt-4">
   <div class="row">
     <%- include('../../partials/flash-message.ejs') %>
     <div class="col-md-12">
@@ -38,7 +38,7 @@
             <td>$<%= product.productPrice %></td>
             <td><%= product.quantity %></td>
             <td class="align-middle">
-              <img class="img-fluid img-thumbnail" src="<%= product.image %>" alt="" style="width: 100px; height: 100px;">
+              <img class="img-fluid img-thumbnail" src="<%= product.images[0].thumbnailUrl %>" alt="" style="width: 100px; height: 100px;">
             </td>                      
             <td>
               <div class="btn-group" role="group" aria-label="Product Actions">
