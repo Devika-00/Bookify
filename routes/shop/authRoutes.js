@@ -24,6 +24,7 @@ router.get("/verify-otp", authController.verifyOtppage);
 router.get("/blocked/:id", authController.blockedUserpage);
 
 router.post("/verify-otp", authController.verifyOtp);
+router.post("/resend-email", authController.resendEmail);
 router.post("/login",passport.authenticate("local", { successRedirect: "/", failureRedirect: "/auth/login", failureFlash: true }));
 
 router.post("/register",

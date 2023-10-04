@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../../models/usermodel");
-const {body, validationResult} = require("express-validator");
+const { validationResult} = require("express-validator");
 const otpGenerator = require("../../utils/otpGenerator");
 const emailSender = require("../../utils/emailSender");
 const Otp = require("../../models/otpModel");
@@ -28,7 +28,7 @@ exports.loginpage = asyncHandler(async(req,res)=>{
 exports.registerpage = asyncHandler(async(req,res)=>{
     try {
         const messages = req.flash();
-        res.render("shop/pages/auth/register",{title:"Register", page:"register", messages});
+        res.render("shop/pages/auth/register",{title:"Register", page:"register",data:"", messages});
     } catch (error) {
         throw new Error(error);
     }
@@ -40,12 +40,13 @@ exports.registerpage = asyncHandler(async(req,res)=>{
 exports.registerUser = asyncHandler(async (req, res) => {
    try {
     const errors = validationResult(req);
+    const messages = req.flash();
     if (!errors.isEmpty()) {
         errors.array().forEach((error) => {
             req.flash("danger", error.msg);
         });
         const messages = req.flash();
-        res.render("shop/pages/auth/register", { title: "Register", page: "Login", messages, data: req.body });
+        res.render("shop/pages/auth/register", { title: "Register", page: "Login", messages,  data: req.body });
     } else {
         const email = req.body.email;
         const existingUser = await User.findOne({email: email});
@@ -99,17 +100,27 @@ exports.registerUser = asyncHandler(async (req, res) => {
                 </body>
                 </html>`
 
-                await sendEmail({
+                 sendEmail({
                     email: newUser.email,
                     subject: "Email Verification",
                     html: html
                 })
 
                 req.flash("success", "Email send please check your inbox");
-                return res.redirect("/auth/verify-otp")
+                return res.render("shop/pages/auth/verify-otp", {
+                    title: "Verify Email",
+                    page: "Verify Email",
+                    email: newUser.email,
+                    messages
+                });
             } catch (error) {
                 req.flash("danger", "Failed to send mail");
-                return res.redirect("/auth/verify-email")
+                return res.render("shop/pages/auth/verify-otp", {
+                    title: "Verify Email",
+                    page: "Verify Email",
+                    email: newUser.email,
+                    messages
+                });
             }
         } else {
             req.flash("warning", "Email Alardy Registerd Please login");
@@ -147,6 +158,75 @@ exports.verifyOtp = asyncHandler(async (req, res) => {
     }
 });
 
+/**
+ * Resend Email Route
+ * Method POST
+ */
+exports.resendEmail = asyncHandler(async (req, res) => {
+    const email = req.body.email;
+    try {
+        const user = await User.findOne({ email: email });
+        const otp = await Otp.create({
+            user_id: user._id,
+            user_email: user.email,
+            otp_code: generateOTP(),
+            expiration_time: Date.now() + 60000,
+        });
+
+        const html = `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Email Verification</title>
+        </head>
+        <body>
+            <table cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                    <td align="center" style="background-color: #f4f4f4; padding: 40px 0;">
+                        <table cellspacing="0" cellpadding="0" width="600" style="background-color: #ffffff; border-radius: 6px; box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                            <tr>
+                                <td style="text-align: center; padding: 30px;">
+                                    <h2>Verify Your Email Address</h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 20px;">
+                                    <p>Dear ${user.email},</p>
+                                    <p>Thank you for registering with Craftopia! To complete the registration process and ensure the security of your account, please verify your email address.</p>
+                                    <p>Here is your one-time verification code:</p>
+                                    <p style="font-size: 24px; font-weight: bold;">OTP Code: ${otp.otp_code}</p>
+                                    <p>Please use this code within the next 60 second to confirm your email address. If you do not verify your email within this time frame, you will need to request a new OTP.</p>
+                                    <p>If you did not sign up for an account with Craftopia, please disregard this email.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 30px;">
+                                    <p>Thank you for choosing Craftopia. We look forward to serving you!</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
+        `;
+        sendEmail({
+            email: user.email,
+            subject: "Email Verification",
+            html: html,
+        });
+        req.flash("success", "Email Send Please check your inbox");
+        return res.render("shop/pages/auth/verify-otp", {
+            title: "Verify Email",
+            page: "Verify Email",
+            email: user.email,
+        });
+    } catch (error) {
+        throw new Error(error);
+    }
+});
 
 
 /**
@@ -195,14 +275,14 @@ exports.forgotPasswordSuccesspage = asyncHandler(async(req,res)=>{
  * Send Otp page Route
  * Method GET
  */
-exports.sendOtppage = asyncHandler(async (req, res) => {
-    try {
-        const messages = req.flash();
-        res.render("shop/pages/auth/send-otp", { title: "Send Otp", page: "Send Otp", messages });
-    } catch (error) {
-        throw new Error(error);
-    }
-});
+// exports.sendOtppage = asyncHandler(async (req, res) => {
+//     try {
+//         const messages = req.flash();
+//         res.render("shop/pages/auth/send-otp", { title: "Send Otp", page: "Send Otp", messages });
+//     } catch (error) {
+//         throw new Error(error);
+//     }
+// });
 
 /**
  * Verify Otp page Route
@@ -211,6 +291,7 @@ exports.sendOtppage = asyncHandler(async (req, res) => {
 
 exports.verifyOtppage = asyncHandler(async (req, res) => {
     try {
+        // const email = req.body.email || req.user.email;
         const messages = req.flash();
         res.render("shop/pages/auth/verify-otp", { title: "Send Otp", page: "Send Otp", messages });
     } catch (error) {

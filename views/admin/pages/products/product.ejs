@@ -29,7 +29,7 @@
               product.title.substring(0, 10) + "..." %> <% } else { %> <%=
               product.title %> <% } %>
             </td>
-            <td><%= product.category.title %></td>
+            <td><%= product?.category?.title %></td>
             <td><% if (product.description.length > 10) { %> <%=
               product.description.substring(0, 10) + '...' %> <% } else { %> <%=
               product.description %> <% } %>

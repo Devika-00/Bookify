@@ -13,44 +13,44 @@
                                 role="tab"
                                 aria-selected="true"
                             >
-                                <img src="<%= product?.images[0].thumbnailUrl %>" alt=""/>
+                                <img src="<%= product?.images[0]?.thumbnailUrl %>" alt=""/>
                             </a>
                             <a class="mb-10 " href="#pro-details2" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                <img src="<%= product?.images[1].thumbnailUrl %>" alt="" />
+                                <img src="<%= product?.images[1]?.thumbnailUrl %>" alt="" />
                             </a>
                             <a class="mb-10 " href="#pro-details3" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                <img src="<%= product?.images[2].thumbnailUrl %>" alt=""  />
+                                <img src="<%= product?.images[2]?.thumbnailUrl %>" alt=""  />
                             </a>
                             <a class="mb-10 " href="#pro-details4" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                <img src="<%= product?.images[3].thumbnailUrl %>" alt="" />
+                                <img src="<%= product?.images[3]?.thumbnailUrl %>" alt="" />
                             </a>
                         </div>
                         <div class="product-details-large tab-content" style="height: 400px; width: 400px;">
                             <div class="tab-pane active show fade" id="pro-details1" role="tabpanel">
                                 <div class="easyzoom easyzoom--overlay is-ready">
-                                    <a href="<%= product?.images[0].imageUrl  %>">
-                                        <img src="<%= product?.images[0].imageUrl %>" alt="" />
+                                    <a href="<%= product?.images[0]?.imageUrl  %>">
+                                        <img src="<%= product?.images[0]?.imageUrl %>" alt="" />
                                     </a>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pro-details2" role="tabpanel">
                                 <div class="easyzoom easyzoom--overlay is-ready">
-                                    <a href="<%= product?.images[1].imageUrl %>">
-                                        <img src="<%= product?.images[1].imageUrl %>" alt=""/>
+                                    <a href="<%= product?.images[1]?.imageUrl %>">
+                                        <img src="<%= product?.images[1]?.imageUrl %>" alt=""/>
                                     </a>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pro-details3" role="tabpanel">
                                 <div class="easyzoom easyzoom--overlay is-ready">
-                                    <a href="<%= product?.images[2].imageUrl %>">
-                                        <img src="<%= product?.images[2].imageUrl %>" alt="" />
+                                    <a href="<%= product?.images[2]?.imageUrl %>">
+                                        <img src="<%= product?.images[2]?.imageUrl %>" alt="" />
                                     </a>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pro-details4" role="tabpanel">
                                 <div class="easyzoom easyzoom--overlay is-ready">
-                                    <a href="<%= product?.images[3].imageUrl %>">
-                                        <img src="<%= product?.images[3].imageUrl %>" alt="" />
+                                    <a href="<%= product?.images[3]?.imageUrl %>">
+                                        <img src="<%= product?.images[3]?.imageUrl %>" alt="" />
                                     </a>
                                 </div>
                             </div>
@@ -79,15 +79,24 @@
                     <p>
                     <%= product.description %>
                     </p>
-                    
+                    <% if (product.quantity === 0) { %>
+                        <smal class="text-danger h4 ">Out Of Stock!</smal>
+                        <% } else if (product.quantity < 5) { %>
+                        <smal class="text-warning h5">Hurry, Only <%= product.quantity %> more left!</smal>
+                        <% } %>
                     
 
-                    <div class="quickview-plus-minus">
-                        <div class="quickview-btn-cart">
-                            <a class="btn-hover-black" href="#">add to cart</a>
-                        </div>
+                    <div class="quickview-plus-minus mt-4">
                         <div class="quickview-btn-wishlist">
                             <a class="btn-hover" href="#"><i class="pe-7s-like"></i></a>
+                        </div>
+                        <div class="quickview-btn-cart ">
+                            <% if(product.quantity === 0){ %>
+                                <a class="btn-hover-black" onclick="alert('You will be notified')">Notify me</a>
+                               <% }else{ %>
+
+                                <a class="btn-hover-black" onclick="addToCart(`<%= product._id %>`)">add to cart</a>
+                               <% } %>
                         </div>
                     </div>
                     
@@ -176,3 +185,46 @@
     </div>
 </div>
 <!-- product area end -->
+
+<script>
+    function addToCart(id) {
+    const productId = id;
+    const url = `/cart/add/${productId}`;
+    // const cartCount = document.getElementById("cartCount");
+    const cartMessage = document.getElementById("cart-message");
+
+    fetch(url, {
+        method: "GET",
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.json(); // Assuming server sends JSON
+            } else {
+                console.error("Failed");
+            }
+        })
+        .then((data) => {
+            if (data) {
+                console.log(data["message"]);
+
+                // Check if 'count' and 'message' properties exist in data
+                if (data.count && data.message) {
+                    // cartCount.innerText = data.count;
+                    cartMessage.innerHTML = data.message;
+
+                    cartMessage.className = `position-fixed bg-${data.status} text-white p-2 rounded`;
+                    cartMessage.style.display = "block";
+
+                    setTimeout(function () {
+                        cartMessage.style.display = "none";
+                    }, 3000);
+                } else {
+                    console.error("Unexpected data format");
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("An error occurred:", error);
+        });
+}
+</script>

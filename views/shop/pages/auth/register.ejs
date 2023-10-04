@@ -7,15 +7,22 @@
                 <div class="login">
                     <div class="login-form-container">
                         <div class="login-form">
-                            <form action="/auth/register" method="post">
-                                <input type="text" name="firstName" placeholder="Firstname" />
-                                <input type="text" name="lastName" placeholder="lastname" />
-                                <input type="number" name="mobile" placeholder="Mobile number" />
-                                <input type="email" placeholder="Email" name="email"/>
-                                <input type="password" name="password" placeholder="Password"/>
-                                <input type="password" name="confirm-password" placeholder="Confirm Password"/>
+                            <form action="/auth/register" method="post" id="registrationForm">
+                                <input type="text" name="firstName" placeholder="Firstname" value="<%= data?.firstName %>" required onblur="validateField('firstName')"/>
+                                <p class="text-danger" id="firstNameError"></p>
+                                <input type="text" name="lastName" placeholder="lastname"   value="<%= data?.lastName %>" required onblur="validateField('lastName')"/>
+                                <p class="text-danger" id="lastNameError"></p>
+                                <input type="number" name="mobile" placeholder="Mobile number"   value="<%= data?.mobile %>" required onblur="validateField('mobile')" />
+                                <p class="text-danger" id="mobileError"></p>
+                                <input type="email" placeholder="Email" value="<%= data?.email %>" name="email" required onblur="validateField('email')"/>
+                                <p class="text-danger" id="emailError"></p>
+                                <input type="password" name="password" placeholder="Password" required onblur="validateField('password')"/>
+                                <p class="text-danger" id="passwordError"></p>
+                                <input type="password" name="confirm-password" placeholder="Confirm Password" required onblur="validateField('confirm-password')"/>
+                                <p class="text-danger" id="confirmPasswordError"></p>
                                 <div class="button-box">
-                                    <button type="submit" class="default-btn floatright">Register</button>
+                                    <button type="submit" class="default-btn floatright" id="registerButton">Register</button>
+                                    <p class="text-danger" id="formErrorMessage"></p>
                                 </div>
                             </form>
                         </div>
@@ -26,3 +33,5 @@
     </div>
 </div>
 <!-- register-area end -->
+<script src="/shop/js/registerValidations.js"></script>
+
