@@ -21,7 +21,5 @@ router.get("/about",shopController.aboutpage);
 router.get("/shop",productController.shoppage);
 router.get("/product/:id", productController.singleProductpage);
 
-//Cart routes
-router.get("/cart",cartController.cartpage);
 
 module.exports= router;

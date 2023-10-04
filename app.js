@@ -11,6 +11,8 @@ const { default: mongoose } = require("mongoose");
 const { ensureAdmin } = require("./middlewares/authMiddleware");
 const methodOverride = require("method-override");
 const nocache = require("nocache");
+const Cart = require("./models/cartModel");
+const Category = require("./models/categoryModel")
 
 
 
@@ -55,7 +57,26 @@ app.use(passport.initialize());
 app.use(passport.session());
 require("./utils/passport.auth");
 
-app.use((req, res, next) => {
+// app.use((req, res, next) => {
+//     res.locals.user = req.user;
+//     next();
+// });
+
+app.use(async (req, res, next) => {
+    const categories = await Category.find({ isListed: true });
+
+    if (req?.user?.role === "User") {
+        const cart = await Cart.find({ user: req.user.id });
+
+        // Check if the cart array has any elements
+        if (cart && cart.length > 0) {
+            res.locals.cartCount = 0; 
+        } else {
+            res.locals.cartCount = 0;
+        }
+    }
+
+    res.locals.categories = categories;
     res.locals.user = req.user;
     next();
 });
@@ -94,6 +115,7 @@ const shopRoute = require("./routes/shop/shopRouter");
 const authRoutes = require("./routes/shop/authRoutes");
 const userRoutes = require("./routes/shop/userRoutes");
 const orderRoutes = require("./routes/shop/orderRoutes");
+const cartRoutes = require("./routes/shop/cartRoutes");
 
 
 
@@ -101,6 +123,7 @@ app.use("/",  shopRoute);
 app.use("/auth", authRoutes);
 app.use("/user",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser,  userRoutes);
 app.use("/order",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser, orderRoutes);
+app.use("/cart",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser, cartRoutes);
 
 app.use((req,res)=>{
     res.render("404",{title:"404", page:"404"});

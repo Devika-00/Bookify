@@ -51,15 +51,17 @@ exports.editCategorypage = asyncHandler(async(req,res)=>{
  */
 exports.addCategory = asyncHandler(async (req, res) => {
     try {
-        const existingCategory = await Category.findOne({title:req.body.title});
+        const existingCategory = await Category.findOne({title:{$regex: new RegExp(req.body.title, "i")}});
         if(existingCategory){
             req.flash("warning","Category already exist");
             res.redirect("/admin/category/add-category");
-        } 
-
-        const newCategory = await Category.create(req.body);
+        }else {
+            const newCategory = await Category.create(req.body);
         req.flash("success", `${newCategory.title} added`);
-        res.redirect("/admin/category/categories")
+        res.redirect("/admin/category/categories");
+        }
+
+        
     } catch (error) {
         throw new Error(error);
     }

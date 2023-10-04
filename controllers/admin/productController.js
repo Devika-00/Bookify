@@ -189,8 +189,8 @@ exports.editImagepage = asyncHandler(async (req, res) => {
 });
 
 /**
- * 
- * edit image 
+ *
+ * edit image
  * put method
  */
 
@@ -210,6 +210,64 @@ exports.editImage = asyncHandler(async (req, res) => {
 
     req.flash("success", "Image updated");
     res.redirect("back");
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+/**
+ * Delete Product Image
+ * Method DELETE
+ */
+exports.deleteImage = asyncHandler(async (req, res) => {
+  try {
+    const imageId = req.params.id;
+    // Optionally, you can also remove the image from your database
+    await Image.findByIdAndRemove(imageId);
+    const product = await Product.findOneAndUpdate(
+      { images: imageId },
+      { $pull: { images: imageId } },
+      { new: true }
+    );
+    res.json({ message: "Images Removed" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+/**
+ * Add New Images
+ * Method POST
+ */
+exports.addNewImages = asyncHandler(async (req, res) => {
+  try {
+    const files = req.files;
+    const imageUrls = [];
+    const productId = req.params.id;
+
+    for (const file of files) {
+      try {
+        const imageBuffer = sharp(file.path).resize(600, 600).toBuffer();
+        const thumbnailBuffer = sharp(file.path).resize(300, 300).toBuffer();
+
+        const imageUrl = path.join("/admin/uploads", file.filename);
+        const thumbnailUrl = path.join("/admin/uploads", file.filename);
+        imageUrls.push({imageUrl, thumbnailUrl})
+      } catch (error) {
+          console.log("Error Processing image: ", error);
+      }
+    }
+
+    const image = await Image.create(imageUrls);
+    const ids = image.map((image) => image._id);
+    const product = await Product.findByIdAndUpdate(productId, {
+      $push: { images: ids },
+  });
+
+  req.flash("success", "Image added");
+        res.redirect("back");
+
   } catch (error) {
     throw new Error(error);
   }

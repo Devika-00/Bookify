@@ -1,88 +1,102 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <title><%= title %></title>
-        <meta name="description" content="" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="/shop/img/favicon.png" />
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title><%= title %></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Favicon -->
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/shop/img/favicon.png"
+    />
 
-        <!-- all css here -->
-        <link rel="stylesheet" href="/shop/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="/shop/css/magnific-popup.css" />
-        <link rel="stylesheet" href="/shop/css/animate.css" />
-        <link rel="stylesheet" href="/shop/css/owl.carousel.min.css" />
-        <link rel="stylesheet" href="/shop/css/themify-icons.css" />
-        <link rel="stylesheet" href="/shop/css/pe-icon-7-stroke.css" />
-        <link rel="stylesheet" href="/shop/css/icofont.css" />
-        <link rel="stylesheet" href="/shop/css/meanmenu.min.css" />
-        <link rel="stylesheet" href="/shop/css/easyzoom.css" />
-        <link rel="stylesheet" href="/shop/css/bundle.css" />
-        <link rel="stylesheet" href="/shop/css/style.css" />
-        <link rel="stylesheet" href="/shop/css/responsive.css" />
-        <script src="/shop/js/vendor/modernizr-3.11.7.min.js"></script>
+    <!-- all css here -->
+    <link rel="stylesheet" href="/shop/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/shop/css/magnific-popup.css" />
+    <link rel="stylesheet" href="/shop/css/animate.css" />
+    <link rel="stylesheet" href="/shop/css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/shop/css/themify-icons.css" />
+    <link rel="stylesheet" href="/shop/css/pe-icon-7-stroke.css" />
+    <link rel="stylesheet" href="/shop/css/icofont.css" />
+    <link rel="stylesheet" href="/shop/css/meanmenu.min.css" />
+    <link rel="stylesheet" href="/shop/css/easyzoom.css" />
+    <link rel="stylesheet" href="/shop/css/bundle.css" />
+    <link rel="stylesheet" href="/shop/css/style.css" />
+    <link rel="stylesheet" href="/shop/css/responsive.css" />
+    <script src="/shop/js/vendor/modernizr-3.11.7.min.js"></script>
 
-        <!-- New -->
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-    </head>
-    <body>
-        <% if (page !== "blocked") { %>
-        <!-- Header  -->
-        <%- include('./partials/header.ejs') %>
-        <!-- Header End -->
+    <!-- New -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <% if (page !== "blocked") { %>
+    <!-- Header  -->
+    <%- include('./partials/header.ejs') %>
+    <!-- Header End -->
 
-        <% if (page === "home") { %> <% } else { %>
-        <!-- BreadCrumbs -->
-        <%- include('./partials/breadCrumbs.ejs') %>
-        <!-- BreadCrumbs End -->
-        <% } %>
+    <% if (page === "home") { %> <% } else { %>
+    <!-- BreadCrumbs -->
+    <%- include('./partials/breadCrumbs.ejs') %>
+    <!-- BreadCrumbs End -->
+    <% } %>
 
-        <!-- Main  -->
-        <%- body %>
-        <!-- Main End -->
+    <!-- Main  -->
+    <%- body %>
+    <!-- Main End -->
 
-        <!-- Footer  -->
-        <%- include('./partials/footer.ejs') %>
-        <!-- Footer End -->
+    <!-- Footer  -->
+    <%- include('./partials/footer.ejs') %>
+    <!-- Footer End -->
+
+    <!-- Model End -->
+    <% } else { %> <%- body %> <% } %>
+
+    <div
+      id="cart-message"
+      class="position-fixed p-2 rounded"
+      style="bottom: 20px; right: 20px; display: none; z-index: 999"
+    ></div>
 
 
-        <!-- Model End -->
-        <% } else { %> <%- body %> <% } %>
 
-        <script>
-            // Function to hide the flash message after a certain time (e.g., 5 seconds)
-            function hideFlashMessage() {
-                const flashMessage = document.getElementById("flash-message");
-                if (flashMessage) {
-                    setTimeout(() => {
-                        flashMessage.style.display = "none";
-                    }, 5000); // 5000 milliseconds (5 seconds)
-                }
-            }
+    <script>
+      // Function to hide the flash message after a certain time (e.g., 5 seconds)
+      function hideFlashMessage() {
+        const flashMessage = document.getElementById("flash-message");
+        if (flashMessage) {
+          setTimeout(() => {
+            flashMessage.style.display = "none";
+          }, 5000); // 5000 milliseconds (5 seconds)
+        }
+      }
 
-            // Call the function to hide the flash message when the page loads
-            window.addEventListener("load", hideFlashMessage);
-        </script>
+      // Call the function to hide the flash message when the page loads
+      window.addEventListener("load", hideFlashMessage);
+    </script>
 
-        <!-- new  -->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- new  -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        <!-- all js here -->
-        <script src="/shop/js/vendor/jquery-1.12.4.min.js"></script>
-        <script src="/shop/js/popper.js"></script>
-        <script src="/shop/js/bootstrap.min.js"></script>
-        <script src="/shop/js/jquery.magnific-popup.min.js"></script>
-        <script src="/shop/js/isotope.pkgd.min.js"></script>
-        <script src="/shop/js/imagesloaded.pkgd.min.js"></script>
-        <script src="/shop/js/jquery.counterup.min.js"></script>
-        <script src="/shop/js/waypoints.min.js"></script>
-        <script src="/shop/js/ajax-mail.js"></script>
-        <script src="/shop/js/owl.carousel.min.js"></script>
-        <script src="/shop/js/plugins.js"></script>
-        <script src="/shop/js/main.js"></script>
-    </body>
+    <!-- all js here -->
+    <script src="/shop/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="/shop/js/popper.js"></script>
+    <script src="/shop/js/bootstrap.min.js"></script>
+    <script src="/shop/js/jquery.magnific-popup.min.js"></script>
+    <script src="/shop/js/isotope.pkgd.min.js"></script>
+    <script src="/shop/js/imagesloaded.pkgd.min.js"></script>
+    <script src="/shop/js/jquery.counterup.min.js"></script>
+    <script src="/shop/js/waypoints.min.js"></script>
+    <script src="/shop/js/ajax-mail.js"></script>
+    <script src="/shop/js/owl.carousel.min.js"></script>
+    <script src="/shop/js/plugins.js"></script>
+    <script src="/shop/js/main.js"></script>
+  </body>
 </html>

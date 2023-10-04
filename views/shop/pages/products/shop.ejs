@@ -7,8 +7,9 @@
           <div class="sidebar-widget mb-50">
             <h3 class="sidebar-title">Search Products</h3>
             <div class="sidebar-search">
-              <form action="#">
-                <input placeholder="Search Products..." type="text" />
+              <form action="/shop" method="get">
+                <input placeholder="Search Products..." type="text" id="search"
+                name="search" value="<%= search %>" />
                 <button><i class="ti-search"></i></button>
               </form>
             </div>
@@ -17,11 +18,14 @@
             <h3 class="sidebar-title">Categories</h3>
             <div class="sidebar-categories">
               <ul>
-                <% category.forEach(element => { %>
-                <li>
-                  <a href="#"><%= element.title %></a>
-                </li>
-                <% }) %>
+                <% categories.forEach(element => { %>
+                  <li>
+                      <a
+                          href="/shop?page=<%= currentPage - 1 %>&search=<%= search %>&category=<%= element._id %>"
+                          ><%= element.title %>
+                      </a>
+                  </li>
+                  <% }) %>
               </ul>
             </div>
           </div>
@@ -34,11 +38,13 @@
               <div class="shop-found-selector">
                 <div class="shop-selector">
                   <label>Sort By : </label>
-                  <select name="select">
-                    <option value="">Default</option>
-                    <option value="">A to Z</option>
-                    <option value="">Z to A</option>
-                    <option value="">In stock</option>
+                  <select name="sortBy" id="sortBySelect" data-current-page="<%= currentPage %>"
+                    data-category="<%= category %>">
+                    <option <%= sortBy === "default" ? "selected" : "" %> value="default">Default</option>
+                    <option <%= sortBy === "az" ? "selected" : "" %> value="az">A to Z</option>
+                    <option <%= sortBy === "za" ? "selected" : "" %> value="za">Z to A</option>
+                    <option <%= sortBy === "price-asc" ? "selected" : "" %> value="priceasc">price:Low to High</option>
+                    <option <%= sortBy === "price-desc" ? "selected" : "" %> value="pricedesc">price:High to Low</option>
                   </select>
                 </div>
               </div>
@@ -65,7 +71,7 @@
               </div>
             </div>
             <div class="shop-product-content tab-content">
-              <div id="grid-sidebar1" class="tab-pane fade active show">
+              <div id="grid-sidebar1" class="tab-pane fade active show ">
                 <div class="row">
                   <!-- product loop  -->
                   <% products.forEach(product => { %>
@@ -94,7 +100,7 @@
                           <a
                             class="animate-top"
                             title="Add To Cart"
-                            href="/cart/add/<%= product._id %>"
+                            onclick="addToCart(`<%= product._id %>`)"
                           >
                             <i class="pe-7s-cart"></i>
                           </a>
@@ -104,17 +110,14 @@
                       <!-- Product Details -->
                       <div class="product-content">
                         <div class="d-flex justify-content-between">
-                          <small
-                            class="card-title"
-                            style="
-                              overflow: hidden;
-                              text-overflow: ellipsis;
-                              white-space: nowrap;
-                            "
+                          <medium
+                              class="card-title font-weight-bold"
+                              style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap"
                           >
-                            <%= product.title %>
-                          </small>
-                        </div>
+                              <%= product.title %>
+                              <h6 class="small">Category:<%= product.category.title %></h6>
+                          </medium>
+                      </div>
                         <div class="d-flex justify-content-between">
                           <span
                             class="text-decoration-line-through text-secondary"
@@ -167,7 +170,7 @@
                           <div class="product-list-cart">
                             <a
                               class="btn-hover list-btn-style"
-                              href="/cart/add/<%= product._id %>"
+                              onclick="addToCart(`<%= product._id %>`)"
                               >add to cart</a
                             >
                           </div>
@@ -225,3 +228,77 @@
     </div>
   </div>
 </div>
+
+<script>
+  const sortBySelect = document.getElementById("sortBySelect");
+  const currentPage = sortBySelect.getAttribute("data-current-page");
+  const category = sortBySelect.getAttribute("data-category");
+  const search = document.getElementById("search").value;
+
+  sortBySelect.addEventListener("change", function () {
+      const selectedValue = this.value;
+
+      // Define a mapping of sort options to URLs
+      const sortOptionsToUrls = {
+          default: "/shop/",
+          az: `/shop/?page=${currentPage - 1}&search=${search}&category=${category}&sortBy=az`,
+          za: `/shop/?page=${currentPage - 1}&search=${search}&category=${category}&sortBy=za`,
+          priceasc: `/shop/?page=${currentPage - 1}&search=${search}&category=${category}&sortBy=price-asc`,
+          pricedesc: `/shop/?page=${currentPage - 1}&search=${search}&category=${category}&sortBy=price-desc`,
+      };
+
+      // Get the corresponding URL for the selected sorting option
+      const url = sortOptionsToUrls[selectedValue];
+
+      if (url) {
+          // Redirect to the selected URL
+          window.location.href = url;
+      }
+  });
+</script>
+
+<!-- add to cart function -->
+
+<script>
+  function addToCart(id) {
+    const productId = id;
+    const url = `/cart/add/${productId}`;
+    // const cartCount = document.getElementById("cartCount");
+    const cartMessage = document.getElementById("cart-message");
+
+    fetch(url, {
+        method: "GET",
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.json(); // Assuming server sends JSON
+            } else {
+                console.error("Failed");
+            }
+        })
+        .then((data) => {
+            if (data) {
+                console.log(data["message"]);
+
+                // Check if 'count' and 'message' properties exist in data
+                if (data.count && data.message) {
+                    // cartCount.innerText = data.count;
+                    cartMessage.innerText = data.message;
+
+                    cartMessage.className = `position-fixed bg-${data.status} text-white p-2 rounded`;
+                    cartMessage.style.display = "block";
+
+                    setTimeout(function () {
+                        cartMessage.style.display = "none";
+                    }, 3000);
+                } else {
+                    console.error("Unexpected data format");
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("An error occurred:", error);
+        });
+}
+
+</script>
