@@ -15,16 +15,14 @@ exports.cartpage = asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const messages = req.flash();
     try {
-
         const cart = await Cart.findOne({user: userId}).populate({path:"products.product",populate:{path:"images",model:"Images"},}).exec();
-
-        if(cart){
-            const {subtotal,total,shippingfee} = calculateCartTotals(cart.products);
-           
-            res.render("shop/pages/user/cart",{title:"cart", page:"cart",cart,messages,subtotal,total,shippingfee});
+        
+        if(!cart){
+            // const {subtotal ,total,shippingfee} = calculateCartTotals(cart.products);
+            res.render("shop/pages/user/cart", { title: "Cart", page: "cart",messages,cartItems:null,});
         }else{
-
-            res.render("shop/pages/user/cart", { title: "Cart", page: "cart",messages });
+            const {subtotal ,total,shippingfee} = calculateCartTotals(cart.products);
+            res.render("shop/pages/user/cart",{title:"cart", page:"cart",cartItems: cart,messages,subtotal,total,shippingfee});
         }
 
     } catch (error) {

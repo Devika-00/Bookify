@@ -4,7 +4,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <%- include('../../partials/flash-message.ejs') %>
                 <h1 class="cart-heading">Cart</h1>
-                <form action="#">
+                <form action="/checkout" method="post">
                     <div class="table-content table-responsive">
                         <table>
                             <thead>
@@ -18,8 +18,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% if(cart){ %>
-                                    <% cart.products.forEach((product,index)=>{ %>
+
+                                <% if(cartItems){ %>
+                                    <% cartItems.products.forEach((product,index)=>{ %>
                                         <tr>
                                         <td class="product-remove"><a href="/cart/remove/<%= product.product._id %>"><i class="pe-7s-close"></i></a></td>
                                         <td class="product-thumbnail">
@@ -85,9 +86,6 @@
                                                 <% } %>
                                             </div>
                                         </td>
-
-                                       
-    
                                         <td class="product-subtotal" id="totalProductPrice_<%= product.product._id %>">
                                             <% if (product.product) { %> <% const productTotal =
                                             parseFloat(product.product.salePrice); %> <% const productQuantity =
@@ -98,7 +96,9 @@
                                         </td>
                                     </tr>
                                    <% }) %>
-                               <% } %>
+                               <% } else { %>
+                                    <h5 class="bg-warning p-2">No Items in cart</h5>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -112,25 +112,28 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-5 ms-auto">
-                            <div class="cart-page-total">
-                                <h2>Cart totals</h2>
-                                <ul>
-                                    <li>
-                                        Subtotal <span>₹ <span id="subtotal"> <%= subtotal.toFixed(2) %></span></span>
-                                    </li>
-                                    <li>
-                                        shipping fee <span>₹ <span id="shippingfee"> <%= shippingfee.toFixed(2) %></span></span>
-                                    </li>
-                                    <li>
-                                        Total <span>₹ <span id="cart-total"> <%= total.toFixed(2) %></span></span>
-                                    </li>
-                                </ul>
-                                <a href="#">Proceed to checkout</a>
+
+                    <% if (cartItems) { %>
+                        <div class="row">
+                            <div class="col-md-5 ms-auto">
+                                <div class="cart-page-total">
+                                    <h2>Cart totals</h2>
+                                    <ul>
+                                        <li>
+                                            Subtotal <span>₹ <span id="subtotal"> <%= subtotal?.toFixed(2)  %></span></span>
+                                        </li>
+                                        <li>
+                                            shipping fee <span>₹ <span id="shippingfee"> <%= shippingfee?.toFixed(2) %></span></span>
+                                        </li>
+                                        <li>
+                                            Total <span>₹ <span id="cart-total"> <%= total?.toFixed(2) %></span></span>
+                                        </li>
+                                    </ul>
+                                    <a href="#">Proceed to checkout</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    <% } %>
                 </form>
             </div>
         </div>

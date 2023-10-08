@@ -1,43 +1,36 @@
 <div class="container mt-5">
-    <h2>Saved Addresses</h2>
+    <h2 class="text-center mb-4">Saved Addresses</h2>
 
     <!-- Display saved addresses -->
     <div class="row">
         <!-- Spacer to push the Add Address button to the right -->
         <div class="col-md-6"></div>
         <div class="col-md-6 text-end p-2">
-            <button type="submit" class="btn btn-success ">+ Add Address</button>
+            <a href="/user/add-address"><button type="submit" class="btn btn-success h-auto">+ Add Address</button></a>
         </div>
-        
+
         <!-- Saved Addresses -->
-        <div class="col-md-6">
-            <div class="card mb-3">
+        <%- include('../../partials/flash-message.ejs') %>
+
+        <% if (address && address.length) { %> <% address.forEach(item => { %>
+        <div class="col-md-4 mb-3">
+            <div class="card border-dark h-100 shadow">
                 <div class="card-body">
-                    <h5 class="card-title">Address 1</h5>
-                    <p class="card-text">123 Main St</p>
-                    <p class="card-text">City: Your City</p>
-                    <p class="card-text">State: Your State</p>
-                    <p class="card-text">ZIP Code: 12345</p>
-                    <button class="btn btn-primary mr-2">Edit</button>
-                    <button class="btn btn-danger">Remove</button>
+                    <h5 class="card-title"><%= item.title %></h5>
+                    <p class="card-text"><%= item.name %></p>
+                    <p class="card-text"><%= item.street %>,<%= item.city %>,<%= item.state %>,<%= item.pincode %></p>
+                    <p class="card-text"><%= item.landmark %></p>
+                    <p class="card-text"><%= item.mobile %></p>
+                    <p class="card-text"><%= item.alternativenumber %></p>
+                    <div class="button-box d-flex gap-2">
+                        <a href="/user/address/edit/<%= item._id %>" type="button" class="btn btn-primary mr-2 h-auto">Edit</a>
+                        <form action="/user/address/delete/<%= item._id %>/?_method=DELETE" method="post">
+                            <button type="submit" class="btn btn-danger h-auto">Remove</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Address 1</h5>
-                    <p class="card-text">123 Main St</p>
-                    <p class="card-text">City: Your City</p>
-                    <p class="card-text">State: Your State</p>
-                    <p class="card-text">ZIP Code: 12345</p>
-                    <button class="btn btn-primary mr-2">Edit</button>
-                    <button class="btn btn-danger">Remove</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Add more saved addresses as needed -->
+        <% }) %> <% } else { %> No Address <% } %>
     </div>
 </div>

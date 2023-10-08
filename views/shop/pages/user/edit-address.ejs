@@ -1,0 +1,39 @@
+<div class="container mt-5">
+    <div class="card p-3 p-sm-4 shadow-lg rounded " style="background-color: #f3f5f5;">
+        <h2 class="text-center mb-4">Add New Address</h2>
+        <form action="/user/address/edit/<%= address._id %>/?_method=PUT" method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control form-control-sm" id="name" name="name"  value="<%= address.name %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="street" class="form-label">Street</label>
+                <input type="text" class="form-control form-control-sm" id="city" name="street" value="<%= address.street %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control form-control-sm" id="state" name="city"  value="<%= address.city %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="text" class="form-control form-control-sm" id="address" name="state"  value="<%= address.state %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="pincode" class="form-label">Pincode</label>
+                <input type="text" class="form-control form-control-sm" id="pincode" name="pincode"  value="<%= address.pincode %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="landmark" class="form-label">Landmark</label>
+                <input type="text" class="form-control form-control-sm" id="landmark"  name="landmark"  value="<%= address.landmark %>">
+            </div>
+            <div class="mb-3">
+                <label for="mobile" class="form-label">Mobile Number</label>
+                <input type="text" class="form-control form-control-sm" id="mobile" name="mobile"  value="<%= address.mobile %>" required>
+            </div>
+                <label for="alternativenumber" class="form-label">Alternative Number</label>
+                <input type="text" class="form-control form-control-sm" id="alternativenumber" name="alternativenumber"  value="<%= address.alternativenumber %>">
+            </div>
+            <button type="submit" class="btn btn-success btn-sm mt-2">Save changes </button>
+        </form>
+    </div>
+</div>
