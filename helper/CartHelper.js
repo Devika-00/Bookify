@@ -7,8 +7,13 @@ function calculateCartTotals(products) {
         const productTotal = parseFloat(product.product.salePrice) * product.quantity;
         subtotal += productTotal;
     }
+    
+    let shippingfee = 0;
 
-    const shippingfee = 40 ;
+    if (subtotal > 499){
+        shippingfee = 40;
+    }
+        
 
     const total = subtotal +shippingfee ;
 

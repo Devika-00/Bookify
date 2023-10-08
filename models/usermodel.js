@@ -16,6 +16,9 @@ const UserSchema = new mongoose.Schema({
         required:true,
         unique:true,
     },
+    image: {
+        type: String,
+    },
     isEmailVerified: {
         type: Boolean,
         default: false,
@@ -37,6 +40,8 @@ const UserSchema = new mongoose.Schema({
         enum: [roles.user, roles.admin, roles.superAdmin],
         default: roles.user,
     },
+    address: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 
 });
 

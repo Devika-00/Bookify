@@ -9,6 +9,14 @@ const ensureAdmin = (req, res, next) => {
     }
 };
 
+const ensureUser = (req, res, next) => {
+    if (req?.user?.role === roles.admin || req?.user?.role === roles.superAdmin) {
+        res.redirect("/admin");
+    } else {
+        next();
+    }
+};
+
 const isBlockedAdmin = (req, res, next) => {
     if (req.user.isBlocked) {
         res.redirect(`/admin/auth/blocked/${req.user._id}`);
@@ -28,4 +36,4 @@ const isBlockedUser = (req, res, next) => {
 
 
 
-module.exports={ensureAdmin, isBlockedAdmin,isBlockedUser};
+module.exports={ensureAdmin, isBlockedAdmin,isBlockedUser,ensureUser};

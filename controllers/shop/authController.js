@@ -7,6 +7,7 @@ const Otp = require("../../models/otpModel");
 const generateOTP = require("../../utils/otpGenerator");
 const sendEmail = require("../../utils/emailSender");
 const validateMongoDbId = require("../../utils/validateMongoDbId");
+const { Error } = require("mongoose");
 
 /**Login route
  * GET Method
@@ -106,7 +107,7 @@ exports.registerUser = asyncHandler(async (req, res) => {
                     html: html
                 })
 
-                req.flash("success", "Email send please check your inbox");
+                // req.flash("success", "Email send please check your inbox");
                 return res.render("shop/pages/auth/verify-otp", {
                     title: "Verify Email",
                     page: "Verify Email",
@@ -124,7 +125,7 @@ exports.registerUser = asyncHandler(async (req, res) => {
             }
         } else {
             req.flash("warning", "Email Alardy Registerd Please login");
-                res.redirect("/auth/login");
+                res.redirect("/auth/register");
             
         }
     }
@@ -164,7 +165,9 @@ exports.verifyOtp = asyncHandler(async (req, res) => {
  */
 exports.resendEmail = asyncHandler(async (req, res) => {
     const email = req.body.email;
+   
     try {
+        const messages = req.flash();
         const user = await User.findOne({ email: email });
         const otp = await Otp.create({
             user_id: user._id,
@@ -217,11 +220,12 @@ exports.resendEmail = asyncHandler(async (req, res) => {
             subject: "Email Verification",
             html: html,
         });
-        req.flash("success", "Email Send Please check your inbox");
+        // req.flash("success", "Email Send Please check your inbox");
         return res.render("shop/pages/auth/verify-otp", {
             title: "Verify Email",
             page: "Verify Email",
             email: user.email,
+            messages,
         });
     } catch (error) {
         throw new Error(error);
@@ -254,7 +258,8 @@ exports.logoutUser = asyncHandler(async (req, res, next) => {
  */
 exports.forgotPasswordpage = asyncHandler(async(req,res)=>{
     try {
-        res.render("shop/pages/auth/forgot-password",{title:"Forgot-Password", page:"forgot-password"});
+        const messages = req.flash();
+        res.render("shop/pages/auth/forgot-password",{title:"Forgot-Password", page:"forgot-password", messages});
     } catch (error) {
         throw new Error(error);
     }
@@ -272,17 +277,18 @@ exports.forgotPasswordSuccesspage = asyncHandler(async(req,res)=>{
 });
 
 /**
- * Send Otp page Route
- * Method GET
+ * forgetpassword 
+ * post route
  */
-// exports.sendOtppage = asyncHandler(async (req, res) => {
-//     try {
-//         const messages = req.flash();
-//         res.render("shop/pages/auth/send-otp", { title: "Send Otp", page: "Send Otp", messages });
-//     } catch (error) {
-//         throw new Error(error);
-//     }
-// });
+exports.forgotPassword = asyncHandler(async(req,res)=>{
+    try {
+        
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
+
 
 /**
  * Verify Otp page Route

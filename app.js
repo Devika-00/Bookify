@@ -18,7 +18,7 @@ const Category = require("./models/categoryModel")
 
 
 
-const {
+const {ensureUser,
     isBlockedAdmin,
     isBlockedUser,
 } = require("./middlewares/authMiddleware");
@@ -116,14 +116,16 @@ const authRoutes = require("./routes/shop/authRoutes");
 const userRoutes = require("./routes/shop/userRoutes");
 const orderRoutes = require("./routes/shop/orderRoutes");
 const cartRoutes = require("./routes/shop/cartRoutes");
+const wishlistRoutes = require("./routes/shop/wishlistRoutes");
 
 
 
-app.use("/",  shopRoute);
 app.use("/auth", authRoutes);
 app.use("/user",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser,  userRoutes);
 app.use("/order",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser, orderRoutes);
 app.use("/cart",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser, cartRoutes);
+app.use("/wishlist",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser, wishlistRoutes);
+app.use("/", ensureUser, shopRoute);
 
 app.use((req,res)=>{
     res.render("404",{title:"404", page:"404"});
