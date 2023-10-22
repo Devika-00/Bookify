@@ -1,18 +1,19 @@
-<!-- Wallet Information -->
-<div class="container mt-4">
+<div class="container mt-4 mb-4">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card border-info mb-3">
-                <div class="card-header bg-info text-white text-center">
-                    <h5 class="card-title">Wallet Balance</h5>
-                </div>
-                <div class="card-body">
-                    <h3 class="card-text text-center">$500.00</h3>
-                    <div class="text-center">
-                        <button class="btn btn-info mt-3 mr-2 h-auto">Add Funds</button>
-                    </div>
-                </div>
+      <div class="col-md-4">
+        
+          <div class="card shadow"> 
+            <div class="card-header bg-info text-white text-center">
+              <h5 class="card-title">Wallet Balance</h5>
             </div>
-        </div>
+            <div class="card-body d-flex justify-content-between">
+              <h3 class="card-text ml-4">₹ <%= wallet?.balance ? wallet.balance.toFixed(2) : "0" %></h3>
+              <div class="text-center">
+                  <a class="btn btn-info h-auto btn-sm" href="/user/wallet/<%= wallet?._id %>">Details</a>
+              </div>
+            </div>
+          </div>
+
+      </div>
     </div>
-</div>
+  </div>

@@ -1,0 +1,156 @@
+<div class="container mt-5 mb-5">
+  <div class="card mx-auto shadow">
+    <div class="card-body">
+      <h5 class="card-title">ORDER ID:<%= orders.orderId %></h5>
+      <div class="row">
+        <div class="col-md-3">
+          <img
+            src="<%= order.product.images[0].thumbnailUrl %>"
+            class="card-img"
+            alt="Product Image"
+            style="max-height: 300px; max-width: 200px"
+          />
+        </div>
+        <div class="col-md-8">
+          <p class="card-text">
+            <strong>Product Name:</strong> <%= order.product.title %>
+          </p>
+          <p class="card-text">
+            <strong>Ship To:</strong> <%= orders.shippingAddress %>,<%=
+            orders.street %>,<%= orders.city %>,<%= orders.state %>,<%=
+            orders.zip %>
+          </p>
+          <p class="card-text">
+            <strong>Ordered Date:</strong> <%= new
+            Date(orders.orderedDate).toUTCString() %>
+          </p>
+          <% if (order.status === "Shipped") { %>
+          <p class="card-text">
+            <strong>Shipped On:</strong> <%= new
+            Date(order.shippedDate).toUTCString() %>
+          </p>
+          <% } else if (order.status === "Delivered") { %>
+          <p class="card-text">
+            <strong>Delivered On:</strong> <%= new
+            Date(order.deliveredDate).toUTCString() %>
+          </p>
+          <% } %>
+          <p class="card-text">
+            <strong>Order Status:</strong>
+            <% if (order.status==='Pending' ) { %>
+              <span class="text-warning"> <%= order.status %> </span>
+              <% } else if (order.status==='Shipped' ) { %>
+              <span class="text-primary"> <%= order.status %> </span>
+              <% } else if (order.status==='Cancelled' || order.status==='Return Requested' ) { %>
+              <span class="text-danger"> <%= order.status %> </span>
+              <% } else if (order.status==='Delivered' ) { %>
+              <span class="text-success"> <%= order.status %> </span>
+              <% } else if (order.status==='Returned' ) { %>
+              <span class="text-info"> <%= order.status %> </span>
+              <% } %>
+          </p>
+          <p class="card-text">
+            <strong>Product Price:</strong> ₹<%= order.price %>
+          </p>
+          <p class="card-text">
+            <strong>Quantity:</strong> <%= order.quantity %>
+          </p>
+          <% if (order.status === "Delivered") { %>
+          <button class="btn btn-danger h-auto" data-toggle="modal"
+          data-target="#returnOrderModal">Return Order</button>
+          <% }else if(order.status === "Return Requested" || order.status === "Returned"){ %>
+            <p></p>
+          <% } else if(order.status !== "Cancelled"  ) { %>
+          <button
+            class="btn btn-danger h-auto"
+            data-toggle="modal"
+            data-target="#cancelOrderModal"
+          >
+            Cancel Order
+          </button>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="cancelOrderModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirm Cancellation</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">Are you sure you want to cancel this order?</div>
+      <div class="modal-footer">
+        <form action="/order/single/<%= order._id %>?_method=PUT" method="post">
+          <button type="submit" class="btn btn-danger h-auto">Confirm</button>
+        </form>
+        <button
+          type="button"
+          class="btn btn-secondary h-auto"
+          data-dismiss="modal"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div
+    class="modal fade"
+    id="returnOrderModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="returnOrderModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog" role="document">
+        <form action="/order/return/<%= order._id %>" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="returnOrderModalLabel">Return Order</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="reason">Reason for Return</label>
+                        <select class="form-control" id="reason" name="reason" required>
+                            <option value="" disabled selected>Select a reason</option>
+                            <option value="item_description_mismatch">Item doesn't match the description</option>
+                            <option value="received_wrong_item">Received the wrong item</option>
+                            <option value="item_damaged_or_defective">Item arrived damaged or defective</option>
+                            <option value="changed_mind">Changed my mind</option>
+                            <option value="didnt_meet_expectations">Item didn't meet my expectations</option>
+                            <option value="no_longer_needed">Item is no longer needed</option>
+                            <option value="item_arrived_late">Item arrived late</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary h-auto" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger h-auto">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

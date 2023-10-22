@@ -9,7 +9,12 @@ router.use((req, res, next) => {
 });
 
 // Coupon routes
-router.get("/coupons", couponController.couponspage);
-router.get("/add-coupon", couponController.addCoupon);
+router.get("/", couponController.couponspage);
+router.get("/add", couponController.addCoupon);
+router.get("/edit/:id",couponController.editCouponPage);
+
+router.post("/add", couponController.createCoupon);
+router.post("/edit/:id",couponController.updateCoupon);
+router.delete("/delete/:id",couponController.deleteCoupon);
 
 module.exports=router;

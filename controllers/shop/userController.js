@@ -6,6 +6,8 @@ const sharp = require("sharp");
 const path = require('path');
 const Address = require("../../models/addressamodel");
 const { name } = require("ejs");
+const Wallet = require("../../models/walletModel");
+const WalletTransaction = require("../../models/walletTransactionModel");
 
 
 
@@ -93,17 +95,6 @@ exports.addAddresspage = asyncHandler(async (req, res) => {
     }
 });
 
-/**
- * Checkout Page Route
- * Method GET
- */
-exports.checkoutpage = asyncHandler(async (req, res) => {
-    try {
-        res.render("shop/pages/user/checkout", { title: "Checkout", page: "checkout" });
-    } catch (error) {
-        throw new Error(error);
-    }
-});
 
 /**
  * add address route
@@ -178,8 +169,26 @@ exports.editAddress = asyncHandler(async (req, res) => {
  */
 exports.walletpage = asyncHandler(async(req, res)=>{
     try {
-        res.render("shop/pages/user/wallet",{title:"wallet",page:"wallet"})
+        const messages = req.flash();
+        const user = req.user._id;
+        const wallet = await Wallet.findOne({ user: user._id });
+        res.render("shop/pages/user/wallet",{title:"wallet",page:"wallet",wallet,user,messages});
     } catch (error) {
         throw new Error(error);
+    }
+});
+
+/**
+ * wallet transaction page
+ * get method
+ */
+exports.walletTransactionspage = asyncHandler(async(req,res)=>{
+    try {
+        const walletId = req.params.id;
+        const walletTransaction = await WalletTransaction.find({wallet:walletId});
+        console.log(walletTransaction);
+        res.render("shop/pages/user/walletTransaction",{title:"wallettransaction",page:"wallettransaction", walletTransaction,});
+    } catch (error) {
+       throw new Error(error); 
     }
 })

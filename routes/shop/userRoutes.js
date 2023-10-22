@@ -12,10 +12,10 @@ router.use((req, res, next) => {
 //User routes
 router.get("/profile", userControler.profilepage);
 router.get("/address", userControler.addresspage);
-router.get("/checkout", userControler.checkoutpage);
 router.get("/add-address", userControler.addAddresspage);
 router.get("/address/edit/:id", userControler.editAddresspage);
 router.get("/wallet", userControler.walletpage);
+router.get("/wallet/:id", userControler.walletTransactionspage);
 
 router.post("/add-address", userControler.addAddress);
 

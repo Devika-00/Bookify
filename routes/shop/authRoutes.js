@@ -17,13 +17,14 @@ router.use((req, res, next) => {
 router.get("/login", ensureLoggedOut({ redirectTo: "/" }), authController.loginpage);
 router.get("/register",ensureLoggedOut({ redirectTo: "/" }), authController.registerpage);
 router.get("/forgot-password",ensureLoggedOut({ redirectTo: "/" }), authController.forgotPasswordpage);
-router.get("/forgot-password-success",ensureLoggedOut({ redirectTo: "/" }), authController.forgotPasswordSuccesspage);
+router.get("/reset-password/:token", ensureLoggedOut({ redirectTo: "/" }), authController.resetPasswordpage);
 router.get("/logout", ensureLoggedIn({redirectTo:"/auth/login"}), authController.logoutUser);
 router.get("/verify-otp", authController.verifyOtppage);
 router.get("/blocked/:id", authController.blockedUserpage);
 
 router.post("/verify-otp", authController.verifyOtp);
 router.post("/forgot-password", authController.forgotPassword);
+router.put("/reset-password/:token", authController.resetPassword);
 router.post("/resend-email", authController.resendEmail);
 router.post("/login",passport.authenticate("local", { successRedirect: "/", failureRedirect: "/auth/login", failureFlash: true }));
 

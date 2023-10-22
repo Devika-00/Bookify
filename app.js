@@ -12,10 +12,8 @@ const { ensureAdmin } = require("./middlewares/authMiddleware");
 const methodOverride = require("method-override");
 const nocache = require("nocache");
 const Cart = require("./models/cartModel");
-const Category = require("./models/categoryModel")
-
-
-
+const Category = require("./models/categoryModel");
+const Razorpay = require('razorpay');
 
 
 const {ensureUser,
@@ -104,7 +102,7 @@ app.use("/admin/product",ensureLoggedIn({ redirectTo: "/admin/auth/login" }),  e
 app.use("/admin/category",ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin,isBlockedAdmin,categoryRoute);
 app.use("/admin/banner",ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin,isBlockedAdmin,bannerRoute);
 app.use("/admin/customer",ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin, isBlockedAdmin,customerRoute);
-app.use("/admin/coupon", ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin,isBlockedAdmin,couponRoute);
+app.use("/admin/coupons", ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin,isBlockedAdmin,couponRoute);
 app.use("/admin/auth",adminAuthRoute);
 app.use("/admin/order", ensureLoggedIn({ redirectTo: "/admin/auth/login" }),ensureAdmin,isBlockedAdmin,orderRoute);
 app.use("/admin", ensureLoggedIn({ redirectTo: "/admin/auth/login" }), ensureAdmin, isBlockedAdmin, adminRoute);
@@ -117,6 +115,7 @@ const userRoutes = require("./routes/shop/userRoutes");
 const orderRoutes = require("./routes/shop/orderRoutes");
 const cartRoutes = require("./routes/shop/cartRoutes");
 const wishlistRoutes = require("./routes/shop/wishlistRoutes");
+const checkoutRoutes = require("./routes/shop/checkoutRoutes");
 
 
 
@@ -125,6 +124,7 @@ app.use("/user",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser,  u
 app.use("/order",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser, orderRoutes);
 app.use("/cart",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser, cartRoutes);
 app.use("/wishlist",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser, wishlistRoutes);
+app.use("/checkout",ensureLoggedIn({ redirectTo: "/auth/login" }), isBlockedUser,checkoutRoutes);
 app.use("/", ensureUser, shopRoute);
 
 app.use((req,res)=>{

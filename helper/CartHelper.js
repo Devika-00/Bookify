@@ -8,16 +8,16 @@ function calculateCartTotals(products) {
         subtotal += productTotal;
     }
     
-    let shippingfee = 0;
+    let shippingfee = 40;
 
     if (subtotal > 499){
-        shippingfee = 40;
+        shippingfee = 0;
     }
         
 
     const total = subtotal +shippingfee ;
 
-    return { subtotal, total,shippingfee };
+    return { subtotal, total,shippingfee, };
 }
 
 const findCartItem = async (userId, productId) => {

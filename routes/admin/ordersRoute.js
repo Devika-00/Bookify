@@ -9,7 +9,8 @@ router.use((req, res, next) => {
 });
 
 // Order Routes
-router.get("/orders", orderController.ordersPage);
-router.get("/edit-order", orderController.editOrder);
+router.get("/", orderController.ordersPage);
+router.get("/:id", orderController.editOrder);
+router.put("/update/:id", orderController.updateOrderStatus);
 
 module.exports=router;

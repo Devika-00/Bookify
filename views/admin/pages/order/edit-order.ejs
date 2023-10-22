@@ -1,62 +1,74 @@
-<div class="container mt-4">
+<div class="container mt-2">
     <div class="row">
-        <div class="col-md-12 border rounded " >
-            <h1 class="text-center">Edit Order</h1>
-
-            <!-- Edit Order Form -->
-            <form >
-                <div class="form-group ">
-                    <label for="referenceNo">Reference No</label>
-                    <input type="text" class="form-control" id="referenceNo" placeholder="Enter reference no" required>
+      <% order.orderItems.forEach((item, index) => { %>
+        <div class="col-md-4 mb-4">
+          <div class="card custom-card shadow">
+            <img
+              src="<%= item.product.images[0].thumbnailUrl %>"
+              alt="Product 1"
+              class="img-fluid img-thumbnail mx-auto d-block mt-3"
+              style="height: 300px; width: 300px"
+            />
+            <div class="card-body">
+              <h5 class="card-title mb-2">Edit Order Status</h5>
+              <form action="/admin/order/update/<%= item._id %>?_method=PUT" method="post">
+                <div class="form-group">
+                  <label for="orderId">Order Id</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="orderId"
+                    name="orderId"
+                    placeholder="Enter Order ID"
+                    value="<%= order.orderId %>"
+                    readonly
+                  />
                 </div>
                 <div class="form-group">
-                    <label for="paymentMethod">Payment Method</label>
-                    <select class="form-control" id="paymentMethod" required>
-                        <option value="Credit Card">Credit Card</option>
-                        <option value="PayPal">PayPal</option>
-                        <option value="Bank Transfer">Bank Transfer</option>
-                        <!-- Add more payment methods as needed -->
-                    </select>
+                    <% if(item.status === "Pending" || item.status === "Shipped") { %>
+                        <label for="status">New Status:</label>
+                        <select name="status" class="form-control mb-3">
+                          <% if (item.status === "Pending") { %>
+                              <option value="Pending" <%= item.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                              <option value="Shipped" <%= item.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                              <option value="Delivered" <%= item.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                              <option value="Cancelled" <%= item.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                          <% } else if (item.status === "Shipped") { %>
+                              <option value="Shipped" <%= item.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                              <option value="Delivered" <%= item.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                              <option value="Cancelled" <%= item.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                              <% } %>
+                            </select>
+                            <button type="submit" class="btn btn-primary mt-2">Update Status</button>
+                    <% }else if(item.status === "Cancelled"){ %>
+                        <h5 class="text-danger mt-3 text-weight-bold"> Order cancellled</h5>
+                    <% }else if(item.status === "Delivered"){ %>
+                        <h5 class="text-success mt-3 text-weight-bold"> Order Delivered</h5>
+                    <% } else if (item.status === "Returned") { %>
+                      <h5 class="text-warning mt-3 text-weight-bold"> Order Returned</h5>
+                    <% } %>
+                    
                 </div>
-                <div class="form-group">
-                    <label for="shippingCost">Shipping Cost</label>
-                    <input type="text" class="form-control" id="shippingCost" placeholder="Enter shipping cost" required>
+              </form>
+              <% if (item.status === "Return Requested") { %>
+                <div class="col-md-2 d-flex flex-column justify-content-center">
+                  <form action="/admin/order/update/<%= item._id %>?_method=PUT" method="post">
+                    <button id="confirmButton" class="btn btn-danger text-white mt-3" onclick="confirmReturn(this)">ConfirmReturn</button>
+                  </form>
                 </div>
-                <div class="form-group">
-                    <label for="deliveryDate">Delivery Date</label>
-                    <input type="date" class="form-control" id="deliveryDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="customerName">Customer Name</label>
-                    <input type="text" class="form-control" id="customerName" placeholder="Enter customer name" required>
-                </div>
-                <div class="form-group">
-                    <label for="totalAmount">Total Amount</label>
-                    <input type="text" class="form-control" id="totalAmount" placeholder="Enter total amount" required>
-                </div>
-                <div class="form-group">
-                    <label for="mobile">Mobile</label>
-                    <input type="tel" class="form-control" id="mobile" placeholder="Enter mobile number" required>
-                </div>
-                <div class="form-group">
-                    <label for="shippingAddress">Shipping Address</label>
-                    <textarea class="form-control" id="shippingAddress" rows="4" placeholder="Enter shipping address" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="status">Status</label>
-                    <select class="form-control" id="status" required>
-                        <option value="Pending">Pending</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="items">Items</label>
-                    <textarea class="form-control" id="items" rows="4" placeholder="Enter items details" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Order</button>
-            </form>
+              <% } %>
+            </div>
+          </div>
         </div>
+      <% }) %>
     </div>
-</div>
+  </div>
+
+  <script>
+    function confirmReturn(button) {
+      var returnText = document.getElementById("returnText");
+      button.style.display = "none";
+      returnText.style.display = "block";
+    }
+  </script>
+  
