@@ -1,0 +1,29 @@
+<div class="container mt-4 shadow p-3 mb-5 bg-white rounded">
+  <h1 class="text-center mb-4">Wallet Transactions</h1>
+
+  <!-- Wallet Transaction Table -->
+  <table class="table table-hover table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">S.No</th>
+        <th scope="col">Date</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% walletTransaction.forEach((transaction,index) =>{ %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= new Date(transaction.timestamp).toUTCString() %></td>
+        <td><%= transaction.amount %></td>
+        <% if (transaction.type === "credit") { %>
+          <td class="text-success"><%= transaction.type %></td>
+          <% } else { %>
+          <td class="text-danger"><%= transaction.type %></td>
+          <% } %>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

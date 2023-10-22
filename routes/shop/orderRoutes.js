@@ -9,7 +9,10 @@ router.use((req, res, next) => {
 });
 
 // Order routes
-router.get("/orders", orderController.orderspage);
-router.get("/order-completed", orderController.orderCompletedpage);
+router.get("/", orderController.orderspage);
+router.get("/:id", orderController.singleOrder);
+router.get("/:id", orderController.cancelOrder);
+router.put("/single/:id", orderController.cancelSingleOrder);
+router.post("/return/:id", orderController.returnOrder);
 
 module.exports= router;

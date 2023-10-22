@@ -4,46 +4,39 @@
             <h1>Orders</h1>
 
             <!-- Bordered Box for Order List -->
-            <div class="border rounded ">
+            <div class="border rounded p-3 shadow">
                 <!-- Order List -->
-                <table class="table">
+                <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>So.No</th>
+                            <th>Order ID</th>
                             <th>Name</th>
-                            <th>Mail</th>
+                            <th>Date</th>
                             <th>Price</th>
                             <th>Status</th>
-                            <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Example order rows with different statuses -->
-                        <tr>
-                            <td>1</td>
-                            <td>Customer 1</td>
-                            <td>customer1@example.com</td>
-                            <td>$100.00</td>
-                            <td><span class="rounded bg-success p-2 text-white">Delivered</span></td>
-                            <td>2023-09-10</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Customer 2</td>
-                            <td>customer2@example.com</td>
-                            <td>$75.50</td>
-                            <td><span class="rounded bg-warning p-2 text-white">Pending</span></td>
-                            <td>2023-09-11</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Customer 3</td>
-                            <td>customer3@example.com</td>
-                            <td>$50.25</td>
-                            <td><span class="rounded bg-danger p-2 text-white">Cancelled</span></td>
-                            <td>2023-09-12</td>
-                        </tr>
-                        <!-- Add more order rows as needed -->
+
+                        <% orders.forEach((order, index) => { %>
+                            <tr>
+                                <td class="align-middle"><%= index + 1 %></td>
+                                <td class="align-middle"><%= order.orderId %></td>
+                                <td class="align-middle">
+                                    <%= order.shippingAddress %>, <%= order.city %>, <%= order.zip %>
+                                </td>
+                                <td class="align-middle">
+                                    <%= new Date(order.orderedDate).toLocaleDateString('en-US', { year: 'numeric', month:
+                                    'long', day: 'numeric' }) %>
+                                </td>
+                                <td class="align-middle"><%= order.totalPrice.toFixed(2) %></td>
+                                <td class="align-middle">
+                                    <a class="btn btn-sm btn-primary" href="/admin/order/<%= order.orderId %>">Details</a>
+                                </td>
+                            </tr>
+                            <% }) %>
                     </tbody>
                 </table>
             </div>
