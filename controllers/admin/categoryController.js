@@ -126,7 +126,16 @@ exports.editCategory = asyncHandler(async (req, res) => {
     const id = req.params.id;
     validateMongoDbId(id);
     try {
-        const editedCategory = await Category.findByIdAndUpdate(id, req.body, {new: true});
+        const {title, isListed, offer, offerDescription, startDate, endDate} = req.body;
+
+        const editedCategory = await Category.findById(id);
+        editedCategory.title = title;
+        editedCategory.isListed = isListed;
+        editedCategory.offer = offer;
+        editedCategory.offerDescription = offerDescription;
+        editedCategory.startDate = startDate;
+        editedCategory.endDate = endDate;
+        editedCategory.save();
         req.flash("success", `Category ${editedCategory.title} updated`);
         res.redirect("/admin/category/categories");
     } catch (error) {

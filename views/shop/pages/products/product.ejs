@@ -73,8 +73,19 @@
                             <span>2 Ratting (S)</span>
                         </div>
                     </div>
-                    <div class="details-price">
+                    <!-- <div class="details-price">
                         <span>₹<%= product.salePrice %></span>
+                    </div> -->
+                    <div class="details-price gap-3 d-flex align-items-baseline">
+                        <div class="">
+                            <span class="h3 fw-bold">₹ <%= product.salePrice %></span>
+                        </div>
+                        <div class="">
+                            <span class="text-muted text-decoration-line-through">₹ <%= product.productPrice %></span>
+                        </div>
+                        <div class="">
+                            <span class="h3 text-success"><%= product.category.offer %>% Off</span>
+                        </div>
                     </div>
                     <p>
                     <%= product.description %>
