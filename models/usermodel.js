@@ -54,6 +54,13 @@ const UserSchema = new mongoose.Schema({
             type: Date,
             default: Date.now(),
         },
+        refferalId: {
+            type:String,
+            unique:true,
+        },
+        refferedBy:{
+            type:String,
+        },
     },
     { timestamps: true }
 );
@@ -80,6 +87,15 @@ UserSchema.methods.createResetPasswordToken = async function () {
     this.passwordResetTokenExpires = Date.now() + 10 * 60 * 1000;
     return resetToken;
 };
+
+UserSchema.pre("save",function(next){
+    if(this.isNew){
+        const randomToken = crypto.randomBytes(2).toString("hex");
+        const last4Digits = this._id.toString().slice(-4);
+        this.refferalId = "BK" + last4Digits + randomToken;
+    }
+    next();
+})
 
 
 module.exports = mongoose.model("User", UserSchema);

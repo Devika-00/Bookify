@@ -90,9 +90,10 @@
                         <!-- <span class="bg-danger" >hot</span> -->
                         <div class="product-action">
                           <a
+                            id="wishlistButton"
                             class="animate-left"
                             title="Wishlist"
-                            href="/wishlist/add/<%= product._id %>"
+                            onclick="toggleWishlist('<%= product._id %>')"
                           >
                             <i class="pe-7s-like"></i>
                           </a>
@@ -176,8 +177,9 @@
                           </div>
                           <div class="product-list-wishlist">
                             <a
+                              id="wishlistButton"
                               class="btn-hover list-btn-wishlist"
-                              href="/wishlist/add/<%= product._id %>"
+                              onclick="toggleWishlist('<%= product._id %>')"
                             >
                               <i class="pe-7s-like"></i>
                             </a>
@@ -263,7 +265,7 @@
   function addToCart(id) {
     const productId = id;
     const url = `/cart/add/${productId}`;
-    // const cartCount = document.getElementById("cartCount");
+    const cartCount = document.getElementById("cartCount");
     const cartMessage = document.getElementById("cart-message");
 
     fetch(url, {
@@ -282,7 +284,7 @@
 
                 // Check if 'count' and 'message' properties exist in data
                 if (data.count && data.message) {
-                    // cartCount.innerText = data.count;
+                    cartCount.innerText = data.count;
                     cartMessage.innerText = data.message;
 
                     cartMessage.className = `position-fixed bg-${data.status} text-white p-2 rounded`;
@@ -301,4 +303,44 @@
         });
 }
 
+</script>
+
+<!--wishlist-->
+
+<script>
+  function toggleWishlist(id) {
+  const productId = id;
+  const url = `/wishlist/toggle/${productId}`;
+  const wishlistButton = document.getElementById("wishlistButton");
+  const cartMessage = document.getElementById("wishlist-message");
+
+  fetch(url, {
+      method: "GET",
+  })
+      .then((response) => {
+          if (response.ok) {
+              return response.json(); 
+          } else {
+              console.error("Failed");
+          }
+      })
+      .then((data) => {
+          if (data) {
+              const iconClass = data.isInWishlist ? "text-danger" : "";
+              wishlistButton.innerHTML = `<i class="pe-7s-like ${iconClass}"></i>`;
+              cartMessage.innerHTML = data.message;
+              cartMessage.className = `position-fixed bg-${data.status} text-white p-2 rounded`;
+              cartMessage.style.display = "block";
+
+              setTimeout(function () {
+                  cartMessage.style.display = "none";
+              }, 3000);
+          } else {
+              console.error("Unexpected data format");
+          }
+      })
+      .catch((error) => {
+          console.error("An error occurred:", error);
+      });
+}
 </script>

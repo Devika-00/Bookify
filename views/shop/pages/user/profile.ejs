@@ -95,6 +95,34 @@
           />
         </div>
       </div>
+
+      <div class="col-md-6">
+        <div class="mb-1 p-3 shadow rounded bg-light">
+            <label for="email" class="form-label">Refferal ID</label>
+            <div class="input-group"> <!-- Use an input group for proper alignment -->
+                <input
+                    type="refferal"
+                    class="form-control"
+                    id="referralCode"
+                    name="refferalCode"
+                    value="<%= user?.refferalId %>"
+                    readonly
+                />
+                <div class="input-group-append">
+                    <small class="btn text-secondary" id="copyButton">
+                        <i class="pe-7s-copy-file"></i>
+                    </small>
+                </div>
+            </div>
+            <div class="marquee-container">
+                <p class="text-success marquee">
+                    Invite a friend and earn 100 wallet cash.
+                </p>
+            </div>
+        </div>
+      </div>
+    
+
     </div>
 
     <div class="button-box ">
@@ -136,5 +164,23 @@
               userAvatar.style.display = "block";
           }
       });
+
+      copyButton.addEventListener("click", function () {
+            const codeToCopy = referralCode.textContent;
+
+            const textArea = document.createElement("textarea");
+            textArea.value = codeToCopy;
+
+            document.body.appendChild(textArea);
+
+            textArea.select();
+            textArea.setSelectionRange(0, 99999);
+
+            document.execCommand("copy");
+
+            document.body.removeChild(textArea);
+
+            copyButton.innerText = "Copied!";
+        });
   });
 </script>
