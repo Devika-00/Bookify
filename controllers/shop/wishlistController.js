@@ -1,42 +1,3 @@
-// const asyncHandler = require("express-async-handler");
-// const validateMongoDbId = require("../../utils/validateMongoDbId");
-// const User = require("../../models/usermodel");
-// const Product = require("../../models/productModel");
-
-// /**
-//  * Wishlist Page Route
-//  * Method GET
-//  */
-// exports.wishlistpage = asyncHandler(async (req, res) => {
-//     try {
-//         const userId = req.user_id;
-//         const user = await User.findById(userId).populate("wishlist");
-//         const populatedWishlist = await Product.populate(user.wishlist,{path:"images"});
-//         const messages = req.flash();
-//         res.render("shop/pages/user/wishlist", { title: "Wishlist", page: "wishlist" ,populatedWishlist,messages});
-//     } catch (error) {
-//         throw new Error(error);
-//     }
-// });
-
-// /**add to wishlist
-//  * post method
-//  */
-// exports.addToWishlist = asyncHandler(async(req,res)=>{
-//     try {
-//         const userId = req.user_id;
-//         const productId = req.params.id;
-//         validateMongoDbId(productId);
-
-//         const user = await User.findByIdAndUpdate(userId,{$addToSet:{wishlist:productId},});
-//         req.flash("success","Item added to wishlist");
-//         res.redirect("back");
-//     } catch (error) {
-//         throw new Error(error);
-//     }
-// })
-
-
 
 const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../../utils/validateMongoDbId");
@@ -77,21 +38,31 @@ exports.wishlistpage = asyncHandler(async (req, res) => {
 /** Add to wishlist
  * get method
  */
-exports.addToWishlist = asyncHandler(async (req, res) => {
+exports.toggleWishlist = asyncHandler(async (req, res) => {
     try {
         const userId = req.user._id;
         const productId = req.params.id;
         validateMongoDbId(productId);
 
-        const user = await User.findByIdAndUpdate(userId, { $addToSet: { wishlist: productId } });
+        const user = await User.findById(userId);
 
         // Check if user is null
         if (!user) {
             return res.status(404).send("User not found.");
         }
 
-        req.flash("success", "Item added to wishlist");
-        res.redirect("back");
+        const isInWishlist = user.wishlist.includes(productId);
+
+
+        if (isInWishlist) {
+            user.wishlist = user.wishlist.filter((item) => item.toString() !== productId);
+            await user.save();
+            res.json({ message: "Product removed from wishlist", status: "danger", isInWishlist: false });
+        } else {
+            user.wishlist.push(productId);
+            await user.save();
+            res.json({ message: "Product added to wishlist", status: "success", isInWishlist: true });
+        }
 
     } catch (error) {
         // Handle the error
@@ -114,8 +85,9 @@ exports.removeFromWishlist = asyncHandler(async (req, res) => {
             $pull: { wishlist: productId },
         });
 
-        req.flash("warning", "Item removed from wishlist");
+        req.flash("warning", "Item removed");
         res.redirect("back");
+        
     } catch (error) {
         throw new Error(error);
     }

@@ -1,37 +1,407 @@
 <!--register-area-->
 <div class="register-area ptb-100">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12 col-12 col-lg-12 col-xl-6 ms-auto me-auto">
-                <%- include('../../partials/flash-message.ejs') %>
-                <div class="login">
-                    <div class="login-form-container">
-                        <div class="login-form">
-                            <form action="/auth/register" method="post" id="registrationForm">
-                                <input type="text" name="firstName" placeholder="Firstname" value="<%= data?.firstName %>" required onblur="validateField('firstName')"/>
-                                <p class="text-danger" id="firstNameError"></p>
-                                <input type="text" name="lastName" placeholder="lastname"   value="<%= data?.lastName %>" required onblur="validateField('lastName')"/>
-                                <p class="text-danger" id="lastNameError"></p>
-                                <input type="number" name="mobile" placeholder="Mobile number"   value="<%= data?.mobile %>" required onblur="validateField('mobile')" />
-                                <p class="text-danger" id="mobileError"></p>
-                                <input type="email" placeholder="Email" value="<%= data?.email %>" name="email" required onblur="validateField('email')"/>
-                                <p class="text-danger" id="emailError"></p>
-                                <input type="password" name="password" placeholder="Password" required onblur="validateField('password')"/>
-                                <p class="text-danger" id="passwordError"></p>
-                                <input type="password" name="confirm-password" placeholder="Confirm Password" required onblur="validateField('confirm-password')"/>
-                                <p class="text-danger" id="confirmPasswordError"></p>
-                                <div class="button-box">
-                                    <button type="submit" class="default-btn floatright" id="registerButton">Register</button>
-                                    <p class="text-danger" id="formErrorMessage"></p>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12 col-12 col-lg-12 col-xl-6 ms-auto me-auto">
+        <%- include('../../partials/flash-message.ejs') %>
+        <div class="login">
+          <div class="login-form-container">
+            <div class="login-form">
+              <form action="/auth/register" method="post" id="registrationForm">
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="Firstname"
+                  value="<%= data?.firstName %>"
+                  required
+                />
+                <p class="text-danger" id="firstNameError"></p>
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="lastname"
+                  value="<%= data?.lastName %>"
+                  required
+                />
+                <p class="text-danger" id="lastNameError"></p>
+                <input
+                  type="number"
+                  name="mobile"
+                  placeholder="Mobile number"
+                  value="<%= data?.mobile %>"
+                  required
+                />
+                <p class="text-danger" id="mobileError"></p>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value="<%= data?.email %>"
+                  name="email"
+                  required
+                />
+                <p class="text-danger" id="emailError"></p>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  required
+                />
+                <p class="text-danger" id="passwordError"></p>
+                <input
+                  type="password"
+                  name="confirm-password"
+                  placeholder="Confirm Password"
+                  required
+                />
+                <p class="text-danger" id="confirmPasswordError"></p>
+                <input
+                type="text"
+                id="refferedBy"
+                name="refferedBy"
+                placeholder="Referral Code(optional)"
+                />
+                <div class="button-box">
+                  <button
+                    type="submit"
+                    class="default-btn floatright"
+                    id="registerButton"
+                  >
+                    Register
+                  </button>
+                  <p class="text-danger" id="formErrorMessage"></p>
                 </div>
+              </form>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 <!-- register-area end -->
-<script src="/shop/js/registerValidations.js"></script>
+<!-- <script src="/shop/js/registerValidations.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const registrationForm = document.getElementById("registrationForm");
+    const firstNameInput = document.querySelector('input[name="firstName"]');
+    const lastNameInput = document.querySelector('input[name="lastName"]');
+    const emailInput = document.querySelector('input[name="email"]');
+    const mobileInput = document.querySelector('input[name="mobile"]');
+    const passwordInput = document.querySelector('input[name="password"]');
+    const confirmPasswordInput = document.querySelector('input[name="confirm-password"]');
+    const registerButton = document.getElementById("registerButton");
+    const firstNameError = document.getElementById("firstNameError");
+    const lastNameError = document.getElementById("lastNameError");
+    const emailError = document.getElementById("emailError");
+    const mobileError = document.getElementById("mobileError");
+    const passwordError = document.getElementById("passwordError");
+    const confirmPasswordError = document.getElementById("confirmPasswordError");
+    const formErrorMessage = document.getElementById("formErrorMessage");
 
+    // Regular expressions for validation
+    const nameRegex = /^[a-zA-Z]+$/;
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const phoneRegex = /^\d{10}$/;
+
+    // Function to validate first name
+    function validateFirstName() {
+        const firstNameValue = firstNameInput.value.trim(); // Remove leading/trailing whitespace
+        if (firstNameValue === "") {
+            firstNameError.textContent = "First name is required";
+            return false;
+        } else if (!nameRegex.test(firstNameValue)) {
+            firstNameError.textContent = "First name can only contain alphabets";
+            return false;
+        }
+        firstNameError.textContent = "";
+        return true;
+    }
+
+    // Function to validate last name
+    function validateLastName() {
+        const lastNameValue = lastNameInput.value.trim(); // Remove leading/trailing whitespace
+        if (lastNameValue === "") {
+            lastNameError.textContent = "Last name is required";
+            return false;
+        } else if (!nameRegex.test(lastNameValue)) {
+            lastNameError.textContent = "Last name can only contain alphabets";
+            return false;
+        }
+        lastNameError.textContent = "";
+        return true;
+    }
+
+    // Function to validate email
+    function validateEmail() {
+        if (!emailRegex.test(emailInput.value)) {
+            emailError.textContent = "Invalid email address";
+            return false;
+        }
+           fetch('/auth/check-email',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+            },
+            body:JSON.stringify({email:emailInput.value}),
+           })
+           .then((response)=>{
+            if(response.ok){
+                return response.json();
+            }else{
+                throw new Error('Network response was not ok');
+            }
+           })
+           .then((data)=>{
+            if(data.message === "email already registered"){
+                emailError.textContent = data.message;
+            }else{
+                emailError.textContent = "";
+            }
+           });
+        
+        return true;
+    }
+
+    // Function to validate phone number
+    function validateMobile() {
+        if (!phoneRegex.test(mobileInput.value)) {
+            mobileError.textContent = "Invalid mobile number (10 digits required)";
+            return false;
+        }
+        mobileError.textContent = "";
+        return true;
+    }
+
+    // Function to validate password
+    function validatePassword() {
+        if (passwordInput.value.length < 6) {
+            passwordError.textContent = "Password must be at least 6 characters long";
+            return false;
+        }
+        passwordError.textContent = "";
+        return true;
+    }
+
+    // Function to validate confirm password
+    function validateConfirmPassword() {
+        if (confirmPasswordInput.value !== passwordInput.value) {
+            confirmPasswordError.textContent = "Passwords do not match";
+            return false;
+        }
+        confirmPasswordError.textContent = "";
+        return true;
+    }
+
+    // Function to handle form submission
+    function handleSubmit(event) {
+        event.preventDefault();
+
+        if (
+            validateFirstName() &&
+            validateLastName() &&
+            validateEmail() &&
+            validateMobile() &&
+            validatePassword() &&
+            validateConfirmPassword()
+        ) {
+            // All fields are valid, you can submit the form
+            formErrorMessage.textContent = "";
+            registrationForm.submit();
+        } else {
+            // Some fields are invalid, display an error message
+            formErrorMessage.textContent = "Please correct the errors in the form.";
+        }
+    }
+
+    // Attach event listeners for input fields
+    firstNameInput.addEventListener("blur", validateFirstName);
+    lastNameInput.addEventListener("blur", validateLastName);
+    emailInput.addEventListener("blur", validateEmail);
+    mobileInput.addEventListener("blur", validateMobile);
+    passwordInput.addEventListener("blur", validatePassword);
+    confirmPasswordInput.addEventListener("blur", validateConfirmPassword);
+
+    // Attach event listener for form submission
+    registrationForm.addEventListener("submit", handleSubmit);
+});
+
+</script>
+ -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const registrationForm = document.getElementById("registrationForm");
+    const firstNameInput = document.querySelector('input[name="firstName"]');
+    const lastNameInput = document.querySelector('input[name="lastName"]');
+    const emailInput = document.querySelector('input[name="email"]');
+    const mobileInput = document.querySelector('input[name="mobile"]');
+    const passwordInput = document.querySelector('input[name="password"]');
+    const confirmPasswordInput = document.querySelector(
+      'input[name="confirm-password"]'
+    );
+    const registerButton = document.getElementById("registerButton");
+    const firstNameError = document.getElementById("firstNameError");
+    const lastNameError = document.getElementById("lastNameError");
+    const emailError = document.getElementById("emailError");
+    const mobileError = document.getElementById("mobileError");
+    const passwordError = document.getElementById("passwordError");
+    const confirmPasswordError = document.getElementById(
+      "confirmPasswordError"
+    );
+    const formErrorMessage = document.getElementById("formErrorMessage");
+
+    // Regular expressions for validation
+    const nameRegex = /^[a-zA-Z]+$/;
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const phoneRegex = /^\d{10}$/;
+
+    // Function to validate first name
+    function validateFirstName() {
+      const firstNameError = document.getElementById("firstNameError");
+      const firstNameValue = firstNameInput.value.trim();
+      if (firstNameValue === "") {
+        firstNameError.textContent = "First name is required";
+      } else if (!nameRegex.test(firstNameValue)) {
+        firstNameError.textContent = "First name can only contain alphabets";
+      } else {
+        firstNameError.textContent = "";
+      }
+    }
+
+    // Add a blur event listener to the firstNameInput
+    firstNameInput.addEventListener("blur", validateFirstName);
+
+    // Function to validate last name
+    function validateLastName() {
+      const lastNameError = document.getElementById("lastNameError");
+      const lastNameValue = lastNameInput.value.trim();
+      if (lastNameValue === "") {
+        lastNameError.textContent = "Last name is required";
+      } else if (!nameRegex.test(lastNameValue)) {
+        lastNameError.textContent = "Last name can only contain alphabets";
+      } else {
+        lastNameError.textContent = "";
+      }
+    }
+
+    // Add a blur event listener to the lastNameInput
+    lastNameInput.addEventListener("blur", validateLastName);
+
+    // Function to validate email
+    function validateEmail() {
+      const emailError = document.getElementById("emailError");
+      const emailValue = emailInput.value.trim();
+      if (!emailRegex.test(emailValue)) {
+        emailError.textContent = "Invalid email address";
+      } else {
+        emailError.textContent = "";
+
+        // You can add the fetch request here for email availability check.
+        fetch("/auth/check-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: emailValue }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Network response was not ok");
+            }
+          })
+          .then((data) => {
+            if (data.message === "email already registered") {
+              emailError.textContent = data.message;
+            }
+          })
+          .catch((error) => {
+            console.error("An error occurred:", error);
+          });
+      }
+    }
+
+    // Add a blur event listener to the emailInput
+    emailInput.addEventListener("blur", validateEmail);
+
+    // Function to validate mobile number
+    function validateMobile() {
+      const mobileError = document.getElementById("mobileError");
+      const mobileValue = mobileInput.value.trim();
+      if (!phoneRegex.test(mobileValue)) {
+        mobileError.textContent = "Invalid mobile number (10 digits required)";
+      } else {
+        mobileError.textContent = "";
+      }
+    }
+
+    // Add a blur event listener to the mobileInput
+    mobileInput.addEventListener("blur", validateMobile);
+
+    // Function to validate password
+    function validatePassword() {
+      const passwordError = document.getElementById("passwordError");
+      const passwordValue = passwordInput.value;
+      if (passwordValue.length < 6) {
+        passwordError.textContent =
+          "Password must be at least 6 characters long";
+      } else {
+        passwordError.textContent = "";
+      }
+    }
+
+    // Add a blur event listener to the passwordInput
+    passwordInput.addEventListener("blur", validatePassword);
+
+    // Function to validate confirm password
+    function validateConfirmPassword() {
+      const confirmPasswordError = document.getElementById(
+        "confirmPasswordError"
+      );
+      const passwordValue = passwordInput.value;
+      const confirmPasswordValue = confirmPasswordInput.value;
+      if (confirmPasswordValue !== passwordValue) {
+        confirmPasswordError.textContent = "Passwords do not match";
+      } else {
+        confirmPasswordError.textContent = "";
+      }
+    }
+
+    // Add a blur event listener to the confirmPasswordInput
+    confirmPasswordInput.addEventListener("blur", validateConfirmPassword);
+
+    // Function to handle form submission
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      validateFirstName();
+      validateLastName();
+      validateEmail();
+      validateMobile();
+      validatePassword();
+      validateConfirmPassword();
+
+      const allErrors = [
+        document.getElementById("firstNameError").textContent,
+        document.getElementById("lastNameError").textContent,
+        document.getElementById("emailError").textContent,
+        document.getElementById("mobileError").textContent,
+        document.getElementById("passwordError").textContent,
+        document.getElementById("confirmPasswordError").textContent,
+      ];
+
+      if (allErrors.every((error) => error === "")) {
+        // All fields are valid, you can submit the form
+        formErrorMessage.textContent = "";
+        registrationForm.submit();
+      } else {
+        // Some fields are invalid, display an error message
+        formErrorMessage.textContent = "Please correct the errors in the form.";
+      }
+    }
+
+    // Add a submit event listener to the registrationForm
+    registrationForm.addEventListener("submit", handleSubmit);
+  });
+</script>

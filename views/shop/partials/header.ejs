@@ -55,12 +55,16 @@
                         </ul>
                     </nav>
                 </div>
-                <div class="header-cart-2">
-                    <a class="icon-cart" href="/cart">
-                        <i class="ti-shopping-cart"></i>
+                <% if(user){ %>
 
-                    </a>
-                </div>
+                    <div class="header-cart-2">
+                        <a class="icon-cart" href="/cart">
+                            <i class="ti-shopping-cart"></i>
+                            <span id="cartCount" class="handicraft-count"><%=cartCount %></span>
+                        </a>
+                    </div>
+
+                <% } %>
             </div>
             <div class="row">
                 <div class="mobile-menu-area d-md-block col-md-12 col-lg-12 col-12 d-lg-none d-xl-none">

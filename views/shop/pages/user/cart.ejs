@@ -161,14 +161,14 @@
     }
 
     // // Function to update the cart count
-    // function updateCartCount(data) {
-    //     const cartCount = document.getElementById("cartCount");
+    function updateCartCount(data) {
+        const cartCount = document.getElementById("cartCount");
 
-    //     // Update the cart count (if available)
-    //     if (data.count !== undefined) {
-    //         cartCount.innerText = data.count;
-    //     }
-    // }
+        // Update the cart count (if available)
+        if (data.count !== undefined) {
+            cartCount.innerText = data.count;
+        }
+    }
 
     // Function to update the quantity displayed in the <span> element
     function updateQuantityDisplay(id, data) {
@@ -228,7 +228,7 @@
                     updateCartMessage(data);
 
                     // Update the cart count
-                    // updateCartCount(data);
+                    updateCartCount(data);
 
                     // Update the quantity displayed in the <span> element
                     updateQuantityDisplay(id, data);

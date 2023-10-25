@@ -63,12 +63,12 @@ require("./utils/passport.auth");
 app.use(async (req, res, next) => {
     const categories = await Category.find({ isListed: true });
 
-    if (req?.user?.role === "User") {
+    if (req?.user?.role === roles.user) {
         const cart = await Cart.find({ user: req.user.id });
 
         // Check if the cart array has any elements
         if (cart && cart.length > 0) {
-            res.locals.cartCount = 0; 
+            res.locals.cartCount = cart[0].products.length; 
         } else {
             res.locals.cartCount = 0;
         }
@@ -116,6 +116,7 @@ const orderRoutes = require("./routes/shop/orderRoutes");
 const cartRoutes = require("./routes/shop/cartRoutes");
 const wishlistRoutes = require("./routes/shop/wishlistRoutes");
 const checkoutRoutes = require("./routes/shop/checkoutRoutes");
+const { roles } = require("./utils/constants");
 
 
 
