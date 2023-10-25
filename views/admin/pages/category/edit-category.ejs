@@ -9,6 +9,24 @@
           <label for="categoryName" class="form-label">Category Name</label>
           <input type="text" class="form-control" id="categoryName" name="title" value="<%= category.title %>" placeholder="Enter category name">
         </div>
+
+        <div class="form-group">
+          <label for="offer" class="form-label">Offer Percentage</label>
+          <input type="text" class="form-control" id="offer" name="offer" value="<%= category.offer %>"   placeholder="Enter offer percentage">
+      </div>
+      <div class="form-group">
+          <label for="startDate" class="form-label">Start Date</label>
+          <input type="date" class="form-control" id="startDate" name="startDate" value="<%= (category && category.startDate) ? category.startDate.toISOString().split('T')[0] : '' %>"  placeholder="Enter start date">
+      </div>
+      <div class="form-group">
+          <label for="endDate" class="form-label">End Date</label>
+          <input type="date" class="form-control" id="endDate" name="endDate"  value="<%= (category && category.endDate) ? category.endDate.toISOString().split('T')[0] : '' %>"  placeholder="Enter end date">
+      </div>
+      <div class="form-group">
+          <label for="offerDescription" class="form-label">Offer Description</label>
+          <textarea class="form-control" id="offerDescription" name="offerDescription" placeholder="Enter offer description"><%= category.offerDescription %></textarea>
+      </div>
+
         <div class="mb-3">
           <label for="categoryStatus" class="form-label">Status</label>
           <div class="form-check">

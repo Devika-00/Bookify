@@ -66,7 +66,7 @@ exports.singleProductpage = asyncHandler(async (req, res) => {
     validateMongoDbId(id);
    try {
     const messages = req.flash();
-    const product = await Product.findById(id).populate("images");
+    const product = await Product.findById(id).populate("images").populate("category");
     const relatedProducts = await Product.find().populate("images");
     res.render("shop/pages/products/product", {title: "Product", page: "Product ",messages,product,relatedProducts})
    } catch (error) {

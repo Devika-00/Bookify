@@ -15,6 +15,7 @@
             <th>S.No</th>
             <th>Category Name</th>
             <th>List / Unlist</th>
+            <!-- <th>Offer</th> -->
             <th>Action</th>
           </tr>
         </thead>
@@ -43,6 +44,9 @@
               </form>
               <% } %>
             </td>
+
+            <td class="text-center"><%= category.offer %>%</td>
+            
             <td class="text-center">
               <div class="d-flex justify-content-center align-items-center">
                 <a href="/admin/category/edit/<%= category._id %>" class="btn btn-sm btn-primary ml-2 mr-1">
