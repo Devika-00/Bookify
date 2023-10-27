@@ -33,10 +33,10 @@ exports.checkoutpage = asyncHandler(async (req, res) => {
     couponmessages = { status: "text-info", message: "Try " + coupons };
 
     if (cartItems) {
-      const { subtotal, shippingfee, total, discount } =
+      const { subtotal, total, discount } =
         await checkoutHelper.calculateTotalPrice(cartItems, userid, false, null);
 
-      console.log({ subtotal, shippingfee, total, discount });
+      console.log({ subtotal,  total, discount });
 
       res.render("shop/pages/user/checkout", {
         title: "Checkout",
@@ -45,7 +45,6 @@ exports.checkoutpage = asyncHandler(async (req, res) => {
         product: cartItems.products,
         total,
         subtotal,
-        shippingfee,
         cartData,
         couponmessages,
         discount,
@@ -260,7 +259,6 @@ exports.updateCheckoutPage = asyncHandler(async (req, res) => {
         subtotal,
         total,
         discount,
-        shippingfee,
         usedFromWallet,
         walletBalance,
       } = await checkoutHelper.calculateTotalPrice(
@@ -273,7 +271,6 @@ exports.updateCheckoutPage = asyncHandler(async (req, res) => {
         total,
         subtotal,
         usedFromWallet,
-        shippingfee,
         walletBalance,
         discount,
       });

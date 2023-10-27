@@ -36,10 +36,6 @@ exports.getCartItems = asyncHandler(async (userId) => {
 //       subtotal += productTotal;
 //     }
 
-//     let shippingfee = 40;
-//     if (subtotal > 499) {
-//       shippingfee = 0;
-//     }
 
 //     let total = subtotal;
 //     let discount = 0;
@@ -90,10 +86,7 @@ exports.calculateTotalPrice = asyncHandler(
       subtotal += productTotal;
     }
 
-    let shippingfee = 40;
-         if (subtotal > 499) {
-           shippingfee = 0;
-         }
+    
 
     let total;
     let usedFromWallet = 0;
@@ -105,9 +98,9 @@ exports.calculateTotalPrice = asyncHandler(
         discount = ((total * coupon.value) / 100).toFixed(2);
         if (discount > coupon.maxAmount) {
           discount = coupon.maxAmount;
-          total -= discount + shippingfee;
+          total -= discount ;
         } else {
-          total -= discount + shippingfee;
+          total -= discount ;
         }
       }
 
@@ -117,7 +110,7 @@ exports.calculateTotalPrice = asyncHandler(
         total = 0;
       } else {
         usedFromWallet = wallet.balance;
-        total = subtotal - wallet.balance - discount + shippingfee;
+        total = subtotal - wallet.balance - discount ;
         wallet.balance = 0;
       }
       return {
@@ -134,9 +127,9 @@ exports.calculateTotalPrice = asyncHandler(
         discount = ((total * coupon.value) / 100).toFixed(2);
         if (discount > coupon.maxAmount) {
           discount = coupon.maxAmount;
-          total -= discount + shippingfee;
+          total -= discount ;
         } else {
-          total -= discount + shippingfee;
+          total -= discount ;
         }
       }
       return {
@@ -168,12 +161,8 @@ exports.placeOrder = asyncHandler(
       const productTotal =
         parseFloat(cartItem.product.salePrice) * cartItem.quantity;
 
-      let shippingfee = 40;
-      if (productTotal > 499) {
-        shippingfee = 0;
-      }
-
-      total = total + productTotal + shippingfee;
+     
+      total = total + productTotal ;
 
       const item = await OrderItems.create({
         quantity: cartItem.quantity,
@@ -187,9 +176,9 @@ exports.placeOrder = asyncHandler(
       discount = ((total * coupon.value) / 100).toFixed(2);
       if (discount > coupon.maxAmount) {
         discount = coupon.maxAmount;
-        total = total - discount + shippingfee;
+        total = total - discount ;
       } else {
-        total = total - discount + shippingfee;
+        total = total - discount ;
       }
     }
     // const updateProduct = await Product.findById(cartItem.product._id);

@@ -18,11 +18,11 @@ exports.cartpage = asyncHandler(async (req, res) => {
         const cart = await Cart.findOne({user: userId}).populate({path:"products.product",populate:{path:"images",model:"Images"},}).exec();
         
         if(!cart){
-            // const {subtotal ,total,shippingfee} = calculateCartTotals(cart.products);
+            // const {subtotal ,total} = calculateCartTotals(cart.products);
             res.render("shop/pages/user/cart", { title: "Cart", page: "cart",messages,cartItems:null,});
         }else{
-            const {subtotal ,total,shippingfee} = calculateCartTotals(cart.products);
-            res.render("shop/pages/user/cart",{title:"cart", page:"cart",cartItems: cart,messages,subtotal,total,shippingfee});
+            const {subtotal ,total,} = calculateCartTotals(cart.products);
+            res.render("shop/pages/user/cart",{title:"cart", page:"cart",cartItems: cart,messages,subtotal,total,});
         }
 
     } catch (error) {

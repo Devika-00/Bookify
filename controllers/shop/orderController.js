@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const orderHelper = require("../../helper/orderHelper");
+const pdfMake = require("pdfmake/build/pdfmake");
+const vfsFonts = require("pdfmake/build/vfs_fonts");
 
 /**
  * Orders Page Route
@@ -95,4 +97,28 @@ exports.returnOrder = asyncHandler(async(req,res)=>{
     } catch (error) {
         throw new Error(error);
     }
-})
+});
+
+/**
+ * Download Invoice
+ * Method GET
+ */
+exports.donwloadInvoice = asyncHandler(async(req,res)=>{
+    try {
+        const orderId = req.params.id;
+
+        const data = await orderHelper.generateInvoice(orderId);
+        pdfMake.vfs = vfsFonts.pdfMake.vfs;
+
+        const pdfDoc = pdfMake.createPdf(data);
+
+        pdfDoc.getBuffer((buffer)=>{
+            res.setHeader("Content-Type","application/pdf");
+            res.setHeader("Content-Disposition", `attachment; filename=invoices.pdf`);
+
+            res.end(buffer);
+        });
+    } catch (error) {
+        throw new Error(error);
+    }
+});

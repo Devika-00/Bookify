@@ -8,16 +8,12 @@ function calculateCartTotals(products) {
         subtotal += productTotal;
     }
     
-    let shippingfee = 40;
-
-    if (subtotal > 499){
-        shippingfee = 0;
-    }
+    
         
 
-    const total = subtotal +shippingfee ;
+    const total = subtotal ;
 
-    return { subtotal, total,shippingfee, };
+    return { subtotal, total, };
 }
 
 const findCartItem = async (userId, productId) => {
@@ -46,7 +42,7 @@ const incrementQuantity = async (userId, productId, res) => {
 
         const productTotal = product.salePrice * foundProduct.quantity;
         const cart = await Cart.findOne({ user: userId }).populate("products.product");
-        const { subtotal, total, shippingfee } = calculateCartTotals(cart.products);
+        const { subtotal, total, } = calculateCartTotals(cart.products);
 
         res.json({
             message: "Quantity Increased",
@@ -55,12 +51,12 @@ const incrementQuantity = async (userId, productId, res) => {
             status: "success",
             subtotal: subtotal,
             total: total,
-            shippingfee: shippingfee,
+           
         });
     } else {
         const productTotal = product.salePrice * foundProduct.quantity;
         const cart = await Cart.findOne({ user: userId }).populate("products.product");
-        const { subtotal, total, shippingfee} = calculateCartTotals(cart.products);
+        const { subtotal, total,} = calculateCartTotals(cart.products);
         res.json({
             message: "Out of Stock",
             status: "danger",
@@ -68,7 +64,7 @@ const incrementQuantity = async (userId, productId, res) => {
             productTotal,
             subtotal: subtotal,
             total: total,
-            shippingfee: shippingfee,
+            
         });
     }
 };
@@ -89,7 +85,7 @@ const decrementQuantity = async (userId, productId, res) => {
         await updatedCart.save();
 
         const cart = await Cart.findOne({ user: userId }).populate("products.product");
-        const { subtotal, total, shippingfee } = calculateCartTotals(cart.products);
+        const { subtotal, total,  } = calculateCartTotals(cart.products);
 
         res.json({
             message: "Quantity Decreased",
@@ -98,18 +94,17 @@ const decrementQuantity = async (userId, productId, res) => {
             productTotal: product.salePrice * productToDecrement.quantity,
             subtotal,
             total,
-            shippingfee,
+           
         });
     } else {
         const cart = await Cart.findOne({ user: userId }).populate("products.product");
-        const { subtotal, total, shippingfee } = calculateCartTotals(cart.products);
+        const { subtotal, total, } = calculateCartTotals(cart.products);
         const product = await findProductById(productId);
         res.json({
             message: "Product not found in the cart.",
             status: "error",
             subtotal,
             total,
-            shippingfee,
             productTotal: product.salePrice * productToDecrement.quantity,
         });
     }
