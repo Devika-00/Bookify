@@ -38,16 +38,16 @@
           <p class="card-text">
             <strong>Order Status:</strong>
             <% if (order.status==='Pending' ) { %>
-              <span class="text-warning"> <%= order.status %> </span>
-              <% } else if (order.status==='Shipped' ) { %>
-              <span class="text-primary"> <%= order.status %> </span>
-              <% } else if (order.status==='Cancelled' || order.status==='Return Requested' ) { %>
-              <span class="text-danger"> <%= order.status %> </span>
-              <% } else if (order.status==='Delivered' ) { %>
-              <span class="text-success"> <%= order.status %> </span>
-              <% } else if (order.status==='Returned' ) { %>
-              <span class="text-info"> <%= order.status %> </span>
-              <% } %>
+            <span class="text-warning"> <%= order.status %> </span>
+            <% } else if (order.status==='Shipped' ) { %>
+            <span class="text-primary"> <%= order.status %> </span>
+            <% } else if (order.status==='Cancelled' || order.status==='Return Requested' ) { %>
+            <span class="text-danger"> <%= order.status %> </span>
+            <% } else if (order.status==='Delivered' ) { %>
+            <span class="text-success"> <%= order.status %> </span>
+            <% } else if (order.status==='Returned' ) { %>
+            <span class="text-info"> <%= order.status %> </span>
+            <% } %>
           </p>
           <p class="card-text">
             <strong>Product Price:</strong> ₹<%= order.price %>
@@ -56,11 +56,25 @@
             <strong>Quantity:</strong> <%= order.quantity %>
           </p>
           <% if (order.status === "Delivered") { %>
-          <button class="btn btn-danger h-auto" data-toggle="modal"
-          data-target="#returnOrderModal">Return Order</button>
-          <% }else if(order.status === "Return Requested" || order.status === "Returned"){ %>
-            <p></p>
-          <% } else if(order.status !== "Cancelled"  ) { %>
+          <button
+            class="btn btn-danger h-auto"
+            data-toggle="modal"
+            data-target="#returnOrderModal"
+          >
+            Return Order
+          </button>
+          <button
+            type="button"
+            class="btn btn-info h-auto"
+            id="invoiceBtn"
+            data-invoice-id="<%= order._id %>"
+          >
+            Download Invoice
+          </button>
+          <% }else if(order.status === "Return Requested" || order.status ===
+          "Returned"){ %>
+          <p></p>
+          <% } else if(order.status !== "Cancelled" ) { %>
           <button
             class="btn btn-danger h-auto"
             data-toggle="modal"
@@ -113,44 +127,103 @@
   </div>
 </div>
 
-
 <div
-    class="modal fade"
-    id="returnOrderModal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="returnOrderModalLabel"
-    aria-hidden="true"
+  class="modal fade"
+  id="returnOrderModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="returnOrderModalLabel"
+  aria-hidden="true"
 >
-    <div class="modal-dialog" role="document">
-        <form action="/order/return/<%= order._id %>" method="POST">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="returnOrderModalLabel">Return Order</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="reason">Reason for Return</label>
-                        <select class="form-control" id="reason" name="reason" required>
-                            <option value="" disabled selected>Select a reason</option>
-                            <option value="item_description_mismatch">Item doesn't match the description</option>
-                            <option value="received_wrong_item">Received the wrong item</option>
-                            <option value="item_damaged_or_defective">Item arrived damaged or defective</option>
-                            <option value="changed_mind">Changed my mind</option>
-                            <option value="didnt_meet_expectations">Item didn't meet my expectations</option>
-                            <option value="no_longer_needed">Item is no longer needed</option>
-                            <option value="item_arrived_late">Item arrived late</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary h-auto" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger h-auto">Submit</button>
-                </div>
-            </div>
-        </form>
-    </div>
+  <div class="modal-dialog" role="document">
+    <form action="/order/return/<%= order._id %>" method="POST">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="returnOrderModalLabel">Return Order</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="reason">Reason for Return</label>
+            <select class="form-control" id="reason" name="reason" required>
+              <option value="" disabled selected>Select a reason</option>
+              <option value="item_description_mismatch">
+                Item doesn't match the description
+              </option>
+              <option value="received_wrong_item">
+                Received the wrong item
+              </option>
+              <option value="item_damaged_or_defective">
+                Item arrived damaged or defective
+              </option>
+              <option value="changed_mind">Changed my mind</option>
+              <option value="didnt_meet_expectations">
+                Item didn't meet my expectations
+              </option>
+              <option value="no_longer_needed">Item is no longer needed</option>
+              <option value="item_arrived_late">Item arrived late</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary h-auto"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="submit" class="btn btn-danger h-auto">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
+
+<script>
+  document.getElementById("invoiceBtn").addEventListener("click", function (orderId) {
+      var invoiceButton = this;
+      var invoiceId = this.getAttribute("data-invoice-id");
+
+      // Disable the button and change its text
+      invoiceButton.disabled = true;
+      invoiceButton.textContent = "Downloading...";
+
+      fetch(`/order/download/${invoiceId}`)
+          .then((response) => {
+              if (response.ok) {
+                  return response.blob();
+              } else {
+                  console.error("Failed to download the invoice");
+              }
+          })
+          .then((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "invoice.pdf";
+              a.click();
+              window.URL.revokeObjectURL(url);
+
+              // Re-enable the button and restore its original text
+              invoiceButton.disabled = false;
+              invoiceButton.textContent = "Download Invoice";
+          })
+          .catch((error) => {
+              // Handle errors here
+
+              // Re-enable the button and restore its original text
+              invoiceButton.disabled = false;
+              invoiceButton.textContent = "Download Invoice";
+
+              console.error("An error occurred:", error);
+          });
+  });
+</script>

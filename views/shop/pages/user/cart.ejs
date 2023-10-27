@@ -122,9 +122,7 @@
                                         <li>
                                             Subtotal <span>₹ <span id="subtotal"> <%= subtotal?.toFixed(2)  %></span></span>
                                         </li>
-                                        <li>
-                                            shipping fee <span>₹ <span id="shippingfee"> <%= shippingfee?.toFixed(2) %></span></span>
-                                        </li>
+                                       
                                         <li>
                                             Total <span>₹ <span id="cart-total"> <%= total?.toFixed(2) %></span></span>
                                         </li>
@@ -193,11 +191,11 @@
 
     function updateCartTotal(data) {
         const subTotal = document.getElementById("subtotal");
-        const shippingfee = document.getElementById("shippingfee");
+        
         const cartTotal = document.getElementById("cart-total");
 
         subTotal.innerText = data.subtotal;
-        shippingfee.innerText = data.shippingfee;
+        
         cartTotal.innerText = data.total;
     }
 
