@@ -75,3 +75,55 @@ exports.generateSalesReport = async (req, res, next) => {
         next(error);
     }
 };
+
+/**
+ * Get Sales Data
+ * Method GET
+ */
+exports.getSalesData = async (req, res) => {
+    try {
+        const pipeline = [
+            {
+                $project: {
+                    year: { $year: "$orderedDate" },
+                    month: { $month: "$orderedDate" },
+                    totalPrice: 1,
+                },
+            },
+            {
+                $group: {
+                    _id: { year: "$year", month: "$month" },
+                    totalSales: { $sum: "$totalPrice" },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    month: {
+                        $concat: [
+                            { $toString: "$_id.year" },
+                            "-",
+                            {
+                                $cond: {
+                                    if: { $lt: ["$_id.month", 10] },
+                                    then: { $concat: ["0", { $toString: "$_id.month" }] },
+                                    else: { $toString: "$_id.month" },
+                                },
+                            },
+                        ],
+                    },
+                    sales: "$totalSales",
+                },
+            },
+        ];
+
+        const monthlySalesArray = await Order.aggregate(pipeline);
+
+        console.log(monthlySalesArray)
+
+        res.json(monthlySalesArray);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};

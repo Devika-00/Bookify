@@ -13,6 +13,7 @@ router.get("/", adminController.homepage);
 router.get("/dashboard", adminController.dashboardpage);
 router.get("/settings", adminController.settingspage);
 router.get("/sales-report", adminController.salesReportpage);
+router.get("/sales-data", adminController.getSalesData);
 
 router.get("/get/sales-report", adminController.generateSalesReport);
 router.get("*", (req, res) => {
