@@ -95,7 +95,7 @@
                             title="Wishlist"
                             onclick="toggleWishlist('<%= product._id %>')"
                           >
-                            <i class="pe-7s-like"></i>
+                          <i class='bx bxs-heart'></i>
                           </a>
                           <% if (product.quantity) { %>
                           <a
@@ -191,7 +191,7 @@
                               class="btn-hover list-btn-wishlist"
                               onclick="toggleWishlist('<%= product._id %>')"
                             >
-                              <i class="pe-7s-like"></i>
+                            <i class='bx bxs-heart'></i>
                             </a>
                           </div>
                         </div>
@@ -337,11 +337,10 @@
       .then((data) => {
           if (data) {
               const iconClass = data.isInWishlist ? "text-danger" : "";
-              wishlistButton.innerHTML = `<i class="pe-7s-like ${iconClass}"></i>`;
+              wishlistButton.innerHTML = `<i class='bx bxs-heart ${iconClass}'></i>`;
               cartMessage.innerHTML = data.message;
               cartMessage.className = `position-fixed bg-${data.status} text-white p-2 rounded`;
               cartMessage.style.display = "block";
-
               setTimeout(function () {
                   cartMessage.style.display = "none";
               }, 3000);

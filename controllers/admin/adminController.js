@@ -1,5 +1,11 @@
 const asyncHandler = require("express-async-handler");
 const Order = require("../../models/orderModel");
+const User = require("../../models/usermodel");
+const {roles} = require("../../utils/constants");
+const validateMongoDbId = require("../../utils/validateMongoDbId");
+const Product = require("../../models/productModel");
+const {status} = require("../../utils/status");
+const numeral = require("numeral");
 
 /**
  * Home Page Route
@@ -25,7 +31,33 @@ exports.homepage = asyncHandler(async (req, res) => {
  */
 exports.dashboardpage = asyncHandler(async (req, res) => {
     try {
-        res.render("admin/pages/admin/dashboard", { title: "Dashboard" });
+        const user = req?.user;
+        const recentOrders = await Order.find().limit(5).populate({
+            path:"user",
+            select:"firstName lastname",
+        }).populate("orderItems").select("totalAmount orderDate totalPrice").sort({_id:-1});
+
+        let totalSalesAmount = 0;
+        recentOrders.forEach((order)=>{
+            totalSalesAmount += order.totalPrice;
+        });
+
+        totalSalesAmount = numeral(totalSalesAmount).format("0.0a");
+
+        const totalSoldProducts = await Product.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    total_sold_count: {
+                        $sum: "$sold",
+                    },
+                },
+            },
+        ]);
+
+        const totalOrderCount = await Order.countDocuments();
+        const totalActiveUserCount = await User.countDocuments({ isBlocked: false });
+        res.render("admin/pages/admin/dashboard", { title: "Dashboard",user,recentOrders,totalSalesAmount,totalOrderCount,totalActiveUserCount,totalSoldProducts: totalSoldProducts[0].total_sold_count, });
     } catch (error) {
         throw new Error(error);
     }
@@ -118,8 +150,6 @@ exports.getSalesData = async (req, res) => {
         ];
 
         const monthlySalesArray = await Order.aggregate(pipeline);
-
-        console.log(monthlySalesArray)
 
         res.json(monthlySalesArray);
     } catch (error) {

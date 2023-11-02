@@ -39,7 +39,7 @@ exports.getSingleOrder = asyncHandler(async (orderId) => {
       model: "Images",
     },
   });
-  const orders = await Order.findOne({ orderItems: orderId })
+  const orders = await Order.findOne({ orderItems: orderId });
   return { order, orders };
 });
 
@@ -63,7 +63,7 @@ exports.cancelOrderById = asyncHandler(async (orderId) => {
       const cancelledProduct = await Product.findById(OrderItem.product);
       cancelledProduct.quantity += OrderItem.quantity;
       cancelledProduct.sold -= OrderItem.quantity;
-      await cancelledProduct.save();  
+      await cancelledProduct.save();
     }
 
     //updating order status
@@ -132,14 +132,14 @@ exports.cancelSingleOrder = asyncHandler(async (orderItemId, userId) => {
     } else {
       amountToBeRefunded = orderTotal;
 
-      const existingWallet = await Wallet.findOneAndUpdate({user:userId});
+      const existingWallet = await Wallet.findOneAndUpdate({ user: userId });
       existingWallet.balance += amountToBeRefunded;
       existingWallet.save();
 
       const walletTransaction = await WalletTransaction.create({
-        wallet:existingWallet._id,
-        amount:amountToBeRefunded,
-        type:"credit",
+        wallet: existingWallet._id,
+        amount: amountToBeRefunded,
+        type: "credit",
       });
     }
   }
@@ -148,130 +148,153 @@ exports.cancelSingleOrder = asyncHandler(async (orderItemId, userId) => {
 
 //returnOrder:
 
-exports.returnOrder = asyncHandler(async(returnOrderItemId)=>{
-  const returnOrder = await OrderItem.findByIdAndUpdate(returnOrderItemId,{
-    status:status.returnPending,
+exports.returnOrder = asyncHandler(async (returnOrderItemId) => {
+  const returnOrder = await OrderItem.findByIdAndUpdate(returnOrderItemId, {
+    status: status.returnPending,
   });
   return "redirectBack";
 });
 
-
 // generate invoice
 
-exports.generateInvoice = asyncHandler(async(orderId)=>{
+exports.generateInvoice = asyncHandler(async (orderId) => {
   const order = await OrderItem.findById(orderId).populate("product");
-        const orders = await Order.findOne({ orderItems: order._id });
+  const orders = await Order.findOne({ orderItems: order._id });
 
-        // const user = await User.findById(orders.user);
+  // const user = await User.findById(orders.user);
 
-        const data = {
-            content: [
-                {
-                    text: "INVOICE",
-                    style: "header",
-                    alignment: "center",
-                    margin: [0, 0, 0, 20],
-                },
-                {
-                    columns: [
-                        {
-                            width: "*",
-                            stack: [
-                                { text: `Order Date: ${order.createdAt}` },
-                                { text: `Order ID: ${orders.orderId}` },
-                            ],
-                        },
-                        {
-                            width: "*",
-                            stack: [
-                                { text: `Delivered Date: ${order.deliveredDate}`, alignment: "right" },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    columns: [
-                        {
-                            width: "*",
-                            text: [
-                                { text: "Billing Address:", style: "subheader" },
-                                {
-                                    text: [
-                                        orders.shippingAddress,
-                                        orders.street,
-                                        orders.city,
-                                        orders.state,
-                                        orders.zip,
-                                        orders.phone,
-                                    ].join("\n"),
-                                    style: "address",
-                                },
-                            ],
-                        },
-                        {
-                            width: "*",
-                            text: [
-                                { text: "Payment Information:", style: "subheader" },
-                                `Payment Method: ${orders.payment_method}\nPayment Status: ${order.isPaid}\nWallet Payment: ₹${orders.wallet}`,
-                            ],
-                        },
-                    ],
-                    margin: [0, 20, 0, 10],
-                },
-                { text: "Order Summary:", style: "subheader", margin: [0, 20, 0, 10] },
-                {
-                    table: {
-                        body: [
-                            [
-                                { text: "Product", style: "tableHeader" },
-                                { text: "Quantity", style: "tableHeader" },
-                                { text: "Price", style: "tableHeader" },
-                            ],
-                            [
-                                order.product.title,
-                                order.quantity,
-                                { text: `₹${parseFloat(order.price).toFixed(2)}`, alignment: "right" },
-                            ],
-                            ["Subtotal", "", { text: `₹${parseFloat(orders.totalPrice).toFixed(2)}`, alignment: "right" }],
-                            ["Total", "", { text: `₹${parseFloat(orders.totalPrice).toFixed(2)}`, alignment: "right" }],
-                        ],
-                    },
-                },
-                { text: "Thank you for shopping with us!", style: "thankYou", alignment: "center", margin: [0, 20, 0, 0] },
+  const data = {
+    content: [
+      {
+        text: "INVOICE",
+        style: "header",
+        alignment: "center",
+        margin: [0, 0, 0, 20],
+      },
+      {
+        columns: [
+          {
+            width: "*",
+            stack: [
+              { text: `Order Date: ${order.createdAt}` },
+              { text: `Order ID: ${orders.orderId}` },
             ],
-            styles: {
-                header: {
-                    fontSize: 24,
-                    bold: true,
-                    decoration: "underline",
-                },
-                subheader: {
-                    fontSize: 16,
-                    bold: true,
-                },
-                address: {
-                    fontSize: 14,
-                },
-                info: {
-                    fontSize: 14,
-                },
-                tableHeader: {
-                    fillColor: "#337ab7",
-                    color: "#ffffff",
-                    alignment: "center",
-                    bold: true,
-                },
-                tableCell: {
-                    fillColor: "#f2f2f2",
-                    alignment: "center",
-                },
-                thankYou: {
-                    fontSize: 16,
-                    italic: true,
-                },
-            },
-        };
+          },
+          {
+            width: "*",
+            stack: [
+              {
+                text: `Delivered Date: ${order.deliveredDate}`,
+                alignment: "right",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        columns: [
+          {
+            width: "*",
+            text: [
+              { text: "Billing Address:", style: "subheader" },
+              {
+                text: [
+                  orders.shippingAddress,
+                  orders.street,
+                  orders.city,
+                  orders.state,
+                  orders.zip,
+                  orders.phone,
+                ].join("\n"),
+                style: "address",
+              },
+            ],
+          },
+          {
+            width: "*",
+            text: [
+              { text: "Payment Information:", style: "subheader" },
+              `Payment Method: ${orders.payment_method}\nPayment Status: ${order.isPaid}\nWallet Payment: ₹${orders.wallet}`,
+            ],
+          },
+        ],
+        margin: [0, 20, 0, 10],
+      },
+      { text: "Order Summary:", style: "subheader", margin: [0, 20, 0, 10] },
+      {
+        table: {
+          body: [
+            [
+              { text: "Product", style: "tableHeader" },
+              { text: "Quantity", style: "tableHeader" },
+              { text: "Price", style: "tableHeader" },
+            ],
+            [
+              order.product.title,
+              order.quantity,
+              {
+                text: `₹${parseFloat(order.price).toFixed(2)}`,
+                alignment: "right",
+              },
+            ],
+            [
+              "Subtotal",
+              "",
+              {
+                text: `₹${parseFloat(orders.totalPrice).toFixed(2)}`,
+                alignment: "right",
+              },
+            ],
+            [
+              "Total",
+              "",
+              {
+                text: `₹${parseFloat(orders.totalPrice).toFixed(2)}`,
+                alignment: "right",
+              },
+            ],
+          ],
+        },
+      },
+      {
+        text: "Thank you for shopping with us!",
+        style: "thankYou",
+        alignment: "center",
+        margin: [0, 20, 0, 0],
+      },
+    ],
+    styles: {
+      header: {
+        fontSize: 24,
+        bold: true,
+        decoration: "underline",
+      },
+      subheader: {
+        fontSize: 16,
+        bold: true,
+      },
+      address: {
+        fontSize: 14,
+      },
+      info: {
+        fontSize: 14,
+      },
+      tableHeader: {
+        fillColor: "#337ab7",
+        color: "#ffffff",
+        alignment: "center",
+        bold: true,
+      },
+      tableCell: {
+        fillColor: "#f2f2f2",
+        alignment: "center",
+      },
+      thankYou: {
+        fontSize: 16,
+        italic: true,
+      },
+    },
+  };
 
-        return data;
-    });
-
+  return data;
+});

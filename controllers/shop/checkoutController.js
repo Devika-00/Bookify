@@ -36,7 +36,7 @@ exports.checkoutpage = asyncHandler(async (req, res) => {
       const { subtotal, total, discount } =
         await checkoutHelper.calculateTotalPrice(cartItems, userid, false, null);
 
-      console.log({ subtotal,  total, discount });
+      
 
       res.render("shop/pages/user/checkout", {
         title: "Checkout",
@@ -186,7 +186,7 @@ exports.orderPlaced = asyncHandler(async (req, res) => {
         path: "product",
       },
     });
-    const coupon = order.coupon;
+    const coupon = await Coupon.findOne({code:order?.coupon?.code}) || null;
     const cartItems = await checkoutHelper.getCartItems(req.user._id);
 
     if (order.payment_method === "cash_on_delivery") {
@@ -212,6 +212,7 @@ exports.orderPlaced = asyncHandler(async (req, res) => {
         item.isPaid = "paid";
         await item.save();
       }
+      
       if (coupon) {
         coupon.usedBy.push(userId);
         await coupon.save();
@@ -252,8 +253,6 @@ exports.updateCheckoutPage = asyncHandler(async (req, res) => {
     const user = await User.findById(userid).populate("address");
     const cartItems = await checkoutHelper.getCartItems(userid);
 
-    console.log(coupon);
-
     if (coupon) {
       const {
         subtotal,
@@ -282,7 +281,6 @@ exports.updateCheckoutPage = asyncHandler(async (req, res) => {
           req.body.payWithWallet,
           coupon
         );
-      console.log(subtotal, total, discount);
       res.json({ total, subtotal, usedFromWallet, walletBalance, discount });
     }
   } catch (error) {
@@ -335,8 +333,6 @@ exports.updateCoupon = asyncHandler(async (req, res) => {
 
     const { subtotal, total, discount } =
       await checkoutHelper.calculateTotalPrice(cartItems, userid, false, coupon);
-
-    console.log(subtotal, total, discount);
 
     if (!coupon) {
       const coupons = availableCoupons.map((coupon) => coupon.code).join(" | ");

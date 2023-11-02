@@ -21,63 +21,8 @@ exports.getCartItems = asyncHandler(async (userId) => {
 /**
  * Calculate the total price of cart items
  */
-// exports.calculateTotalPrice = asyncHandler(async (CartItems, userid, payWithWallet, coupon) => {
-//   try {
-//     const wallet = await Wallet.findOne({ user: userid });
-
-//     if (!wallet) {
-//       // Handle the case when the wallet is not found for the user.
-//       return { error: "Wallet not found" };
-//     }
-
-//     let subtotal = 0;
-//     for (const product of CartItems.products) {
-//       const productTotal = parseFloat(product.product.salePrice) * product.quantity;
-//       subtotal += productTotal;
-//     }
-
-
-//     let total = subtotal;
-//     let discount = 0;
-//     let usedFromWallet = 0;
-
-//     if (payWithWallet) {
-//       if (coupon) {
-//         if (coupon.value === 'number' && coupon.maxAmount === 'number') {
-//           discount = Math.round((total * coupon.value) / 100, coupon.maxAmount);
-//         }
-
-//         total -= discount;
-//       }
-
-//       if (total <= wallet.balance) {
-//         usedFromWallet = total;
-//         wallet.balance -= total;
-//         total = 0;
-//       } else {
-//         usedFromWallet = wallet.balance;
-//         total -= wallet.balance;
-//         wallet.balance = 0;
-//       }
-//     }
-
-//     return {
-//       subtotal,
-//       total,
-//       usedFromWallet,
-//       shippingfee,
-//       walletBalance: wallet.balance,
-//       discount,
-//     };
-//   } catch (err) {
-//     // Handle any database or other errors that might occur during the calculation.
-//     return { error: err.message };
-//   }
-// });
-
 exports.calculateTotalPrice = asyncHandler(
   async (cartItems, userid, payWithWallet, coupon) => {
-    console.log({coupon});
     const wallet = await Wallet.findOne({ user: userid });
     let subtotal = 0;
     for (const product of cartItems.products) {
@@ -85,8 +30,6 @@ exports.calculateTotalPrice = asyncHandler(
         parseFloat(product.product.salePrice) * product.quantity;
       subtotal += productTotal;
     }
-
-    
 
     let total;
     let usedFromWallet = 0;
@@ -98,9 +41,9 @@ exports.calculateTotalPrice = asyncHandler(
         discount = ((total * coupon.value) / 100).toFixed(2);
         if (discount > coupon.maxAmount) {
           discount = coupon.maxAmount;
-          total -= discount ;
+          total -= discount;
         } else {
-          total -= discount ;
+          total -= discount;
         }
       }
 
@@ -110,7 +53,7 @@ exports.calculateTotalPrice = asyncHandler(
         total = 0;
       } else {
         usedFromWallet = wallet.balance;
-        total = subtotal - wallet.balance - discount ;
+        total = subtotal - wallet.balance - discount;
         wallet.balance = 0;
       }
       return {
@@ -127,9 +70,9 @@ exports.calculateTotalPrice = asyncHandler(
         discount = ((total * coupon.value) / 100).toFixed(2);
         if (discount > coupon.maxAmount) {
           discount = coupon.maxAmount;
-          total -= discount ;
+          total -= discount;
         } else {
-          total -= discount ;
+          total -= discount;
         }
       }
       return {
@@ -161,8 +104,7 @@ exports.placeOrder = asyncHandler(
       const productTotal =
         parseFloat(cartItem.product.salePrice) * cartItem.quantity;
 
-     
-      total = total + productTotal ;
+      total = total + productTotal;
 
       const item = await OrderItems.create({
         quantity: cartItem.quantity,
@@ -176,9 +118,9 @@ exports.placeOrder = asyncHandler(
       discount = ((total * coupon.value) / 100).toFixed(2);
       if (discount > coupon.maxAmount) {
         discount = coupon.maxAmount;
-        total = total - discount ;
+        total = total - discount;
       } else {
-        total = total - discount ;
+        total = total - discount;
       }
     }
     // const updateProduct = await Product.findById(cartItem.product._id);

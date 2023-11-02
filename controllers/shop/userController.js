@@ -37,9 +37,6 @@ exports.editProfile = asyncHandler(async(req,res)=>{
         
         const{firstName,lastName,mobile,email} = req.body;
         const file = req.file;
-
-        console.log(req.file);
-
         if(file){
 
         
@@ -104,11 +101,16 @@ exports.addAddress = asyncHandler(async(req,res)=>{
     try {
         
         const userid = req.user._id;
+        const contentType = req.get("Content-Type");
         
         const newAddress = await Address.create(req.body);
         await User.findByIdAndUpdate(userid, { $push: { address: newAddress._id } });
-        req.flash("success", "Address Added");
-        res.redirect("/user/address");
+        if (contentType === "application/x-www-form-urlencoded"){
+            req.flash("success", "Address Added");
+            res.redirect("/user/address");
+        }else if (contentType === "application/json") {
+            res.json({ status: "ok" });
+        }
     } catch (error) {
         throw new Error(error);
     }
@@ -186,7 +188,6 @@ exports.walletTransactionspage = asyncHandler(async(req,res)=>{
     try {
         const walletId = req.params.id;
         const walletTransaction = await WalletTransaction.find({wallet:walletId});
-        console.log(walletTransaction);
         res.render("shop/pages/user/walletTransaction",{title:"wallettransaction",page:"wallettransaction", walletTransaction,});
     } catch (error) {
        throw new Error(error); 
