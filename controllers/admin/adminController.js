@@ -44,20 +44,11 @@ exports.dashboardpage = asyncHandler(async (req, res) => {
 
         totalSalesAmount = numeral(totalSalesAmount).format("0.0a");
 
-        const totalSoldProducts = await Product.aggregate([
-            {
-                $group: {
-                    _id: null,
-                    total_sold_count: {
-                        $sum: "$sold",
-                    },
-                },
-            },
-        ]);
+        
 
         const totalOrderCount = await Order.countDocuments();
         const totalActiveUserCount = await User.countDocuments({ isBlocked: false });
-        res.render("admin/pages/admin/dashboard", { title: "Dashboard",user,recentOrders,totalSalesAmount,totalOrderCount,totalActiveUserCount,totalSoldProducts: totalSoldProducts[0].total_sold_count, });
+        res.render("admin/pages/admin/dashboard", { title: "Dashboard",user,recentOrders,totalSalesAmount,totalOrderCount,totalActiveUserCount,});
     } catch (error) {
         throw new Error(error);
     }
@@ -150,6 +141,7 @@ exports.getSalesData = async (req, res) => {
         ];
 
         const monthlySalesArray = await Order.aggregate(pipeline);
+       
 
         res.json(monthlySalesArray);
     } catch (error) {
@@ -157,3 +149,45 @@ exports.getSalesData = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+
+/**
+ * Get Sales Data yearly
+ * Method GET
+ */
+exports.getSalesDataYearly = async (req, res) => {
+    try {
+        const yearlyPipeline = [
+            {
+              $project: {
+                year: { $year: "$orderedDate" },
+                totalPrice: 1,
+              },
+            },
+            {
+              $group: {
+                _id: { year: "$year" },
+                totalSales: { $sum: "$totalPrice" },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                year: { $toString: "$_id.year" },
+                sales: "$totalSales",
+              },
+            },
+          ];
+          
+
+        const yearlySalesArray = await Order.aggregate(yearlyPipeline);
+        console.log(yearlySalesArray);
+
+        res.json(yearlySalesArray);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+
