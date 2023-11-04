@@ -181,8 +181,7 @@ exports.getSalesDataYearly = async (req, res) => {
           
 
         const yearlySalesArray = await Order.aggregate(yearlyPipeline);
-        console.log(yearlySalesArray);
-
+        
         res.json(yearlySalesArray);
     } catch (error) {
         console.error(error);

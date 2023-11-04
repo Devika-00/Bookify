@@ -78,7 +78,16 @@
                                 <li><a class="text-bg-dark-light" href="/about">about us</a>
                                 </li>
                                 <li><a class="text-bg-dark-light" href="/contact"> Contact  </a></li>
-                                <li><a class="text-bg-dark-light" href="/account">Account</a>
+                                <li>
+                                    <% if(user){%>
+                                        <a href="#">Account</a>
+                                        <ul>
+                                            <li><a class="text-bg-dark-light" href="/user/profile">Profile</a></li> 
+                                            <li><a class="text-bg-dark-light" href="/user/address">Address</a></li> 
+                                             <li><a class="text-bg-dark-light" href="/order">Orders</a></li>
+                                             <li><a class="text-bg-dark-light" href="/user/wallet">Wallet</a></li>
+                                            </ul>
+                                   <% } %>
                                 </li>
                             </ul>
                         </nav>
