@@ -24,6 +24,7 @@ router.get("/blocked/:id", authController.blockedUserpage);
 
 router.post("/verify-otp", authController.verifyOtp);
 router.post("/check-email",authController.checkemail);
+router.post("/check-mobile",authController.checkmobile);
 router.post("/forgot-password", authController.forgotPassword);
 router.put("/reset-password/:token", authController.resetPassword);
 router.post("/resend-email", authController.resendEmail);

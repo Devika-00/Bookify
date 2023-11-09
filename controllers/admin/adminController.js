@@ -189,4 +189,48 @@ exports.getSalesDataYearly = async (req, res) => {
     }
 };
 
+/**
+ * get sales data weekly
+ * method get
+ */
+exports.getSalesDataWeekly =async (req, res) => {
+    try {
+        const weeklySalesPipeline = [
+            {
+              $project: {
+                week: { $week: "$orderedDate" },
+                totalPrice: 1,
+              },
+            },
+            {
+                $group: {
+                    _id: { week: { $mod: ["$week", 7] } },
+                    totalSales: { $sum: "$totalPrice" },
+                  },
+            },
+            {
+              $project: {
+                _id: 0,
+                week: { $toString: "$_id.week" },
+                dayOfWeek: { $add: ["$_id.week", 1] },
+                sales: "$totalSales",
+              },
+            },
+            {
+                $sort: { dayOfWeek: 1 },
+              },
+        ];
+          
+
+        const weeklySalesArray = await Order.aggregate(weeklySalesPipeline);
+        console.log(weeklySalesArray);
+
+        res.json(weeklySalesArray);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+
 

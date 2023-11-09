@@ -526,3 +526,23 @@ exports.checkemail = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+/**
+ * check mobile
+ * post  route
+ */
+exports.checkmobile = asyncHandler(async(req,res)=>{
+  try {
+
+    
+    const existingMobile = await User.findOne({mobile: req.body.mobile});
+     
+    if(existingMobile){
+      res.json({status: true, message: "Mobile number alrady registered"})
+    }else{
+      res.json({status: false, message: ""});
+    }
+  } catch (error) {
+    throw new Error(error)
+  }
+});
