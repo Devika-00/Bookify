@@ -15,7 +15,7 @@ router.get("/settings", adminController.settingspage);
 router.get("/sales-report", adminController.salesReportpage);
 router.get("/sales-data", adminController.getSalesData);
 router.get("/sales-data/yearly", adminController.getSalesDataYearly);
-// router.get("/sales-data/weekly", adminController.getSalesDataWeekly);
+router.get("/sales-data/weekly", adminController.getSalesDataWeekly);
 
 router.get("/get/sales-report", adminController.generateSalesReport);
 router.get("*", (req, res) => {
