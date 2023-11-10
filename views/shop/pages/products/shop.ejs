@@ -95,7 +95,7 @@
                             title="Wishlist"
                             onclick="toggleWishlist('<%= product._id %>')"
                           >
-                          <i class='bx bxs-heart'></i>
+                          <i id="<%= product._id %>" class='bx bxs-heart'></i>
                           </a>
                           <% if (product.quantity) { %>
                           <a
@@ -321,7 +321,7 @@
   function toggleWishlist(id) {
   const productId = id;
   const url = `/wishlist/toggle/${productId}`;
-  const wishlistButton = document.getElementById("wishlistButton");
+  const wishlistButton = document.getElementById(productId);
   const cartMessage = document.getElementById("wishlist-message");
 
   fetch(url, {
@@ -336,8 +336,12 @@
       })
       .then((data) => {
           if (data) {
+            if (data.isInWishlist) {
+              wishlistButton.classList.add("text-danger")
+            } else {
+              wishlistButton.classList.remove("text-danger")
+            }
               const iconClass = data.isInWishlist ? "text-danger" : "";
-              wishlistButton.innerHTML = `<i class='bx bxs-heart ${iconClass}'></i>`;
               cartMessage.innerHTML = data.message;
               cartMessage.className = `position-fixed bg-${data.status} text-white p-2 rounded`;
               cartMessage.style.display = "block";
