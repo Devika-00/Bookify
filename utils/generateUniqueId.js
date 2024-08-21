@@ -13,4 +13,4 @@ function generateRandomOrderID() {
     return String(Math.floor(Math.random() * (max - min + 1)) + min).padStart(6, "0");
 }
 
-module.exports = { generateUniqueOrderID };
+module.exports =  generateUniqueOrderID ;
